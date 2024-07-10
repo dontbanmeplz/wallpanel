@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        Example of the Authorization Code Flow with Proof Key for Code Exchange
+        (PKCE) with Spotify
+    </title>
+    <style type="text/css">
+        #login,
+        #loggedin {
+            display: none;
+        }
+
+        td {
+            border: grey solid 1px;
+            overflow-wrap: anywhere;
+        }
+
+        td:first-child {
+            min-width: 150px;
+        }
+    </style>
+
+</head>
+
+<h2 id="name">Nothing Playing</h2>
+<br>
+<button id="togglePlay">Toggle Play</button>
+<input type="range" id="points" name="points" min="0" max="10" value="0" style="width:400px;">
+<p id="time"></p>
+<script src="https://sdk.scdn.co/spotify-player.js"></script>
+<script src="spotify-web-api.js"></script>
+<script>
+    window.onSpotifyWebPlaybackSDKReady = () => {
+        const seekBar = document.getElementById("points");
+        const name = document.getElementById("name");
+        var n = 0;
+        var song = "";
+        var dur = 0
+        const token = access_token;
+        const player = new Spotify.Player({
+            name: 'Web Playback SDK Quick Start Player',
+            getOAuthToken: cb => { cb(token); },
+            volume: 0.5
+        });
+        const spotifyApi = new SpotifyWebApi();
+        spotifyApi.setAccessToken(access_token);
+
+        // Ready
+        player.addListener('ready', ({ device_id }) => {
+            console.log('Ready with Device ID', device_id);
+            spotifyApi.transferMyPlayback([device_id])
+        });
+
+        // Not Ready
+        player.addListener('not_ready', ({ device_id }) => {
+            console.log('Device ID has gone offline', device_id);
+        });
+
+        player.addListener('initialization_error', ({ message }) => {
+            console.error(message);
+        });
+
+        player.addListener('authentication_error', ({ message }) => {
+            refreshToken();
+            window.location.reload();
+            console.error(message);
+        });
+
+        player.addListener('account_error', ({ message }) => {
+            console.error(message);
+        });
+
+        document.getElementById('togglePlay').onclick = function() {
+            player.togglePlay();
+        };
+        let isPlaying = false;
+        let lastState = null;
+        let lastTimestamp = 0;
+        player.addListener('player_state_changed', ({
+                                                        position,
+                                                        duration,
+                                                        track_window: { current_track },
+                                                        paused
+                                                    }) => {
+            if (position === null){
+                position = 0
+            }
+            lastState = position;
+            lastTimestamp = Date.now();
+            if (song !== current_track.name)
+            {
+                song = current_track.name;
+                name.innerText = current_track.name;
+                position = 0
+            }
+            seekBar.max = duration;
+            dur = duration;
+            seekBar.value = position
+            isPlaying = !paused;
+        });
+        function mtms(millis) {
+            var minutes = Math.floor(millis / 60000);
+            var seconds = ((millis % 60000) / 1000).toFixed(0);
+            return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+        }
+        function updateSeekBar() {
+            const seekBar = document.getElementById('points');
+            const t = document.getElementById("time")
+            const elapsedTime = Date.now() - lastTimestamp;
+            let position = lastState + elapsedTime;
+            if (isPlaying) {
+                seekBar.value = position;
+                //console.log(position)
+                t.innerText = mtms(position) + "/" + mtms(dur)
+            }
+            if (parseInt(seekBar.value) > parseInt(seekBar.max)) {
+                seekBar.value = lastState;
+            }
+            requestAnimationFrame(updateSeekBar);
+        }
+        requestAnimationFrame(updateSeekBar);
+        player.connect();
+        seekBar.oninput = (e) => {
+            player.seek(e.target.value).then(() => {
+                lastTimestamp = Date.now();
+                //console.log(e.target.value)
+                lastState = parseInt(e.target.value);
+            });
+        };
+
+
+    }
+
+</script>
+</body>
+<footer>
+    <script src="auth.js"></script>
+    <script>
+        const client_id = '4f3c759785c549bf9eb5dff8c14ceeb5';
+        const redirect_uri = 'http://localhost:808/auth.html'; // Your redirect uri
+
+        // Restore tokens from localStorage
+        let access_token = localStorage.getItem('access_token') || null;
+        let refresh_token = localStorage.getItem('refresh_token') || null;
+        let expires_at = localStorage.getItem('expires_at') || null;
+
+        // If the user has accepted the authorize request spotify will come back to your application with the code in the response query string
+        // Example: http://127.0.0.1:8080/?code=NApCCg..BkWtQ&state=profile%2Factivity
+        const args = new URLSearchParams(window.location.search);
+        const code = args.get('code');
+
+        if (code) {
+            // we have received the code from spotify and will exchange it for a access_token
+            exchangeToken(code);
+        } else if (access_token && refresh_token && expires_at) {
+            // we are already authorized and reload our tokens from localStorage
+
+            getUserData();
+        } else {
+            // we are not logged in so show the login button
+            redirectToSpotifyAuthorizeEndpoint()
+        }
+
+    </script>
+</footer>
+
+</html>

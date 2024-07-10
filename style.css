@@ -1,0 +1,183 @@
+
+:root {
+    --black: #000000;
+    --white: #ffffff;
+
+    --font-size-m: 24px;
+    --font-size-s: 15px;
+    --font-size-xs: 12px;
+
+    --font-family-inter: "Inter", Helvetica;
+}
+
+
+/* screen - now-playing */
+
+.now-playing {
+    background-color: #121212;
+    height: 420px;
+    overflow: hidden;
+    overflow-x: hidden;
+    position: relative;
+    width: 800px;
+}
+
+.now-playing .ab67616d0000b273096a-q2Ud4x {
+    background-color: transparent;
+    height: 195px;
+    left: 298px;
+    object-fit: cover;
+    position: absolute;
+    top: 35px;
+    width: 195px;
+}
+
+.now-playing .title-q2Ud4x {
+    background-color: transparent;
+    color: var(--white);
+    font-family: var(--font-family-inter);
+    font-size: var(--font-size-m);
+    font-style: normal;
+    font-weight: 400;
+    height: auto;
+    left: 243px;
+    letter-spacing: 0.00px;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 238px;
+    width: 315px;
+}
+
+.now-playing .album-q2Ud4x {
+    background-color: transparent;
+    color: var(--white);
+    font-family: var(--font-family-inter);
+    font-size: var(--font-size-s);
+    font-style: normal;
+    font-weight: 400;
+    height: auto;
+    left: 292px;
+    letter-spacing: 0.00px;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 273px;
+    width: 207px;
+}
+
+.now-playing .artist-q2Ud4x {
+    background-color: transparent;
+    color: var(--white);
+    font-family: var(--font-family-inter);
+    font-size: var(--font-size-s);
+    font-style: normal;
+    font-weight: 400;
+    height: auto;
+    left: 304px;
+    letter-spacing: 0.00px;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+    top: 293px;
+    width: 182px;
+}
+
+.now-playing .line-1-q2Ud4x {
+    background-color: transparent;
+    height: 1px;
+    left: 160px;
+    object-fit: cover;
+    position: absolute;
+    top: 376px;
+    width: 486px;
+}
+
+.now-playing .x000-q2Ud4x {
+    left: 111px;
+    top: 370px;
+    width: 40px;
+}
+
+.now-playing .group-1-q2Ud4x {
+    background-color: transparent;
+    height: 30px;
+    left: 380px;
+    position: absolute;
+    top: 324px;
+    width: 30px;
+}
+
+.now-playing .ellipse-1-bJ8vx4 {
+    background-color: var(--white);
+    border-radius: 15px;
+    height: 30px;
+    left: 0px;
+    position: absolute;
+    top: 0px;
+    width: 30px;
+}
+
+.now-playing .playicon-1-bJ8vx4 {
+    background-color: transparent;
+    height: 19px;
+    left: 5px;
+    position: absolute;
+    top: 5px;
+    width: 19px;
+}
+
+.now-playing .previousicon-1-q2Ud4x {
+    background-color: transparent;
+    height: 30px;
+    left: 289px;
+    position: absolute;
+    top: 324px;
+    width: 30px;
+}
+
+.now-playing .nexticon-1-q2Ud4x {
+    background-color: transparent;
+    height: 30px;
+    left: 471px;
+    position: absolute;
+    top: 324px;
+    width: 30px;
+}
+
+.now-playing .queueicon-1-q2Ud4x {
+    background-color: transparent;
+    height: 30px;
+    left: 738px;
+    position: absolute;
+    top: 362px;
+    width: 30px;
+}
+
+.now-playing .x000-rUm8rt {
+    left: 662px;
+    top: 371px;
+    width: auto;
+}
+
+.now-playing .x000 {
+    --black: #000000;
+    --white: #ffffff;
+
+    --font-size-m: 24px;
+    --font-size-s: 15px;
+    --font-size-xs: 12px;
+
+    --font-family-inter: "Inter", Helvetica;
+    background-color: transparent;
+    color: var(--white);
+    font-family: var(--font-family-inter);
+    font-size: var(--font-size-xs);
+    font-style: normal;
+    font-weight: 400;
+    height: auto;
+    letter-spacing: 0.00px;
+    line-height: normal;
+    position: absolute;
+    text-align: center;
+}
