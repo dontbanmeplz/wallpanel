@@ -10,6 +10,10 @@
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
     />
+    <link
+            rel="stylesheet"
+            href="/style.css"
+    />
     <style>
         .swiper {
             width: 100VW;
@@ -54,7 +58,36 @@
     </style>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="auth.js"></script>
+    <script>
 
+        const client_id = '4f3c759785c549bf9eb5dff8c14ceeb5';
+        const redirect_uri = 'http://localhost:808/auth.html'; // Your redirect uri
+
+        // Restore tokens from localStorage
+        let access_token = localStorage.getItem('access_token') || null;
+        let refresh_token = localStorage.getItem('refresh_token') || null;
+        let expires_at = localStorage.getItem('expires_at') || null;
+        refreshToken()
+        refresh_token = localStorage.getItem('refresh_token') || null;
+        // If the user has accepted the authorize request spotify will come back to your application with the code in the response query string
+        // Example: http://127.0.0.1:8080/?code=NApCCg..BkWtQ&state=profile%2Factivity
+        const args = new URLSearchParams(window.location.search);
+        const code = args.get('code');
+
+        if (code) {
+            // we have received the code from spotify and will exchange it for a access_token
+            exchangeToken(code);
+        } else if (access_token && refresh_token && expires_at) {
+            // we are already authorized and reload our tokens from localStorage
+
+            getUserData();
+        } else {
+            // we are not logged in so show the login button
+            redirectToSpotifyAuthorizeEndpoint()
+        }
+
+    </script>
 </head>
 <div class="swiper">
     <!-- Additional required wrapper -->
@@ -68,11 +101,23 @@
                 <div id = "bdy1" class = "bdy hide">
                 </div>
                 <div id = "bdy2" class = "bdy">
-                    <h2 id="name">Nothing Playing</h2>
+                    <!--<h2 id="name">Nothing Playing</h2>
                     <br>
                     <button id="togglePlay">Toggle Play</button>
                     <input type="range" id="points" name="points" min="0" max="10" value="0" style="width:400px;">
-                    <p id="time"></p>
+                    <p id="time"></p> -->
+                    <div class="now-playing screen" ><img class="ab67616d0000b273096a-q2Ud4x" id = "trackimg" src="/img/ab67616d0000b273096a7fc9668305db9d3175fc-1.png" alt="ab67616d0000b273096a7fc9668305db9d3175fc 1">
+                        <h1 class="title-q2Ud4x" id="name">Nothing Playing</h1>
+                        <div class="album-q2Ud4x" id="album">Album</div>
+                        <div class="artist-q2Ud4x" id="artist" >Artist</div>
+                        <input type="range" id="points" name="points" min="0" max="10" value="0" style="width:400px;" class="hide">
+                        <div class="x000-q2Ud4x x000" id="posit">0:00</div>
+                        <div class="group-1-q2Ud4x" id="togglePlay">
+                            <div class="ellipse-1-bJ8vx4"></div><img class="playicon-1-bJ8vx4" src="/img/playicon.svg" id="play" alt="playicon 1"><img class="playicon-1-bJ8vx4 hide" id = "pause" src="/img/pauseicon.svg" alt="playicon 1">
+                        </div><img class="previousicon-1-q2Ud4x" src="/img/previousicon.svg" alt="previousicon 1"><img class="nexticon-1-q2Ud4x" src="/img/nexticon.svg"><img class="queueicon-1-q2Ud4x"src="/img/queueicon.svg">
+                        <img class="likeicon-1-q2Ud4x"src="/img/hearticon.svg">
+                        <div class="x000-rUm8rt x000" id="durration">0:00</div>
+                    </div>
                 </div>
                 <div id = "bdy3" class = "bdy hide">
                 </div>
@@ -136,14 +181,18 @@
     window.onSpotifyWebPlaybackSDKReady = () => {
         const seekBar = document.getElementById("points");
         const name = document.getElementById("name");
-        const time = document.getElementById("time")
+        const t1 = document.getElementById("posit");
+        const t2 = document.getElementById("durration");
         var n = 0;
         var song = "";
         var dur = 0
-        const token = access_token;
+        let token = access_token;
         const player = new Spotify.Player({
             name: 'Web Playback SDK Quick Start Player',
-            getOAuthToken: cb => { cb(token); },
+            getOAuthToken: cb => {
+                refreshToken()
+                cb(access_token);
+                },
             volume: 0.5
         });
         const spotifyApi = new SpotifyWebApi();
@@ -152,7 +201,7 @@
         // Ready
         player.addListener('ready', ({ device_id }) => {
             console.log('Ready with Device ID', device_id);
-            //spotifyApi.transferMyPlayback([device_id])
+            spotifyApi.transferMyPlayback([device_id])
         });
 
         // Not Ready
@@ -176,6 +225,8 @@
 
         document.getElementById('togglePlay').onclick = function() {
             player.togglePlay();
+
+
         };
         let isPlaying = false;
         let lastState = null;
@@ -200,14 +251,38 @@
             seekBar.max = duration;
             dur = duration;
             seekBar.value = position
-            time.innerText = mtms(position) + "/" + mtms(duration)
+            t1.innerText = mtms(position);
+            t2.innerText = mtms(duration)
             isPlaying = !paused;
+            let f = document.getElementById("togglePlay").getElementsByTagName('img');
+            for (let e of f) {
+                if (e.id === "play" && !paused)
+                {
+                    e.className ="playicon-1-bJ8vx4 hide"
+                }
+                else if (e.id === "play" && paused)
+                {
+                    e.className ="playicon-1-bJ8vx4"
+                }
+                if (e.id === "pause" && paused)
+                {
+                    e.className ="playicon-1-bJ8vx4 hide"
+                }
+                else if (e.id === "pause" && !paused)
+                {
+                    e.className ="playicon-1-bJ8vx4"
+                }
+            }
+            document.getElementById("trackimg").src = current_track.album.images[0].url;
+            document.getElementById("album").innerText = current_track.album.name;
+            document.getElementById("artist").innerText = current_track.artists[0].name;
         });
         function mtms(millis) {
             var minutes = Math.floor(millis / 60000);
             var seconds = ((millis % 60000) / 1000).toFixed(0);
             return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
         }
+
         function updateSeekBar() {
             const seekBar = document.getElementById('points');
             const t = document.getElementById("time")
@@ -216,7 +291,8 @@
             if (isPlaying) {
                 seekBar.value = position;
                 //console.log(position)
-                t.innerText = mtms(position) + "/" + mtms(dur)
+                t1.innerText = mtms(position);
+                t2.innerText = mtms(dur)
             }
             if (parseInt(seekBar.value) > parseInt(seekBar.max)) {
                 seekBar.value = lastState;
@@ -235,38 +311,15 @@
 
 
     }
-
+    function fixtoken() {
+        refreshToken()
+        access_token = localStorage.getItem("access_token")
+        spotifyApi.setAccessToken(access_token);
+    }
 </script>
 </body>
 <footer>
-    <script src="auth.js"></script>
-    <script>
-        const client_id = '4f3c759785c549bf9eb5dff8c14ceeb5';
-        const redirect_uri = 'http://localhost:808/auth.html'; // Your redirect uri
 
-        // Restore tokens from localStorage
-        let access_token = localStorage.getItem('access_token') || null;
-        let refresh_token = localStorage.getItem('refresh_token') || null;
-        let expires_at = localStorage.getItem('expires_at') || null;
-
-        // If the user has accepted the authorize request spotify will come back to your application with the code in the response query string
-        // Example: http://127.0.0.1:8080/?code=NApCCg..BkWtQ&state=profile%2Factivity
-        const args = new URLSearchParams(window.location.search);
-        const code = args.get('code');
-
-        if (code) {
-            // we have received the code from spotify and will exchange it for a access_token
-            exchangeToken(code);
-        } else if (access_token && refresh_token && expires_at) {
-            // we are already authorized and reload our tokens from localStorage
-
-            getUserData();
-        } else {
-            // we are not logged in so show the login button
-            redirectToSpotifyAuthorizeEndpoint()
-        }
-
-    </script>
 </footer>
 
 </html>

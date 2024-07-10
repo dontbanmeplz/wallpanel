@@ -40,13 +40,13 @@
     font-style: normal;
     font-weight: 400;
     height: auto;
-    left: 243px;
+    left: 143px;
     letter-spacing: 0.00px;
     line-height: normal;
     position: absolute;
     text-align: center;
-    top: 238px;
-    width: 315px;
+    top: 230px;
+    width: 515px;
 }
 
 .now-playing .album-q2Ud4x {
@@ -101,30 +101,30 @@
 
 .now-playing .group-1-q2Ud4x {
     background-color: transparent;
-    height: 30px;
+    height: 36px;
     left: 380px;
     position: absolute;
-    top: 324px;
-    width: 30px;
+    top: 325px;
+    width: 36px;
 }
 
 .now-playing .ellipse-1-bJ8vx4 {
     background-color: var(--white);
-    border-radius: 15px;
-    height: 30px;
+    border-radius: 18px;
+    height: 36px;
     left: 0px;
     position: absolute;
     top: 0px;
-    width: 30px;
+    width: 36px;
 }
 
 .now-playing .playicon-1-bJ8vx4 {
     background-color: transparent;
-    height: 19px;
-    left: 5px;
+    height: 22px;
+    left: 7px;
     position: absolute;
-    top: 5px;
-    width: 19px;
+    top: 7px;
+    width: 22px;
 }
 
 .now-playing .previousicon-1-q2Ud4x {
@@ -153,7 +153,14 @@
     top: 362px;
     width: 30px;
 }
-
+.now-playing .likeicon-1-q2Ud4x {
+    background-color: transparent;
+    height: 30px;
+    left: 100px;
+    position: absolute;
+    top: 362px;
+    width: 30px;
+}
 .now-playing .x000-rUm8rt {
     left: 662px;
     top: 371px;
