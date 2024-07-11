@@ -17,17 +17,7 @@
 
     </style>
     <style>
-        .topblock
-        {
-            width: 266.6px;
-            height: 60px;
-            margin: 0px;
-            padding: 0px;
-            top: -20px;
-            background-color: #535353;
-            position:relative;
-            float:right;
-        }
+
         .bdy{
             width: 100vw;
             height: calc(100vh - 60px);
@@ -88,16 +78,13 @@
         <!-- Slides -->
         <div class="swiper-slide">
             <div class="slidecontainer">
-                <div class="topblock" id="b1"><p class="tite">Playlists</p></div>
-                <div class="topblock active" id="b2"><p class="tite">Now Playing</p></div>
-                <div class="topblock" id="b3"><p class="tite">Search</p></div>
-                <div class="bdy hide" id="bdy1"></div>
+                <div class="topblock" id="b3"><div class="tite">Search</div></div>
+                <div class="topblock active" id="b2"><div class="tite">Now Playing</div></div>
+                <div class="topblock" id="b1"><div class="tite">Playlists</div></div>
+                <div class="bdy hide" id="bdy1">
+
+                </div>
                 <div class="bdy" id="bdy2">
-                    <!--<h2 id="name">Nothing Playing</h2>
-                <br>
-                <button id="togglePlay">Toggle Play</button>
-                <input type="range" id="points" name="points" min="0" max="10" value="0" style="width:400px;">
-                <p id="time"></p> -->
                     <div class="now-playing screen">
                         <img alt="ab67616d0000b273096a7fc9668305db9d3175fc 1" class="ab67616d0000b273096a-q2Ud4x" id="trackimg" src="/img/ab67616d0000b273096a7fc9668305db9d3175fc-1.png">
                         <h1 class="title-q2Ud4x" id="name">Nothing Playing</h1>
@@ -121,7 +108,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="bdy hide" id="bdy3"></div>
+                <div class="bdy hide" id="bdy3">
+                    <div  class="searchbutton screen">
+                        <img class="ellipse-2-ab07IB" src="https://cdn.animaapp.com/projects/627bc3864a350444b8da3ce4/releases/668f33530373c280a6ab42fd/img/ellipse-2.svg" alt="Ellipse 2">
+                        <img id = "hiii" class="microphone-342-1-ab07IB" src="https://cdn.animaapp.com/projects/627bc3864a350444b8da3ce4/releases/668f33530373c280a6ab42fd/img/microphone-342-1.svg" alt="microphone-342 1">
+                    </div>
+                </div>
             </div>
         </div>
         <div class="swiper-slide">
@@ -166,6 +158,7 @@
         });
         document.getElementById("bdy" + this.id.split("")[1]).className = "bdy";
     });
+
 </script>
 <script>
     window.addEventListener("contextmenu", function(e) { e.preventDefault(); })
@@ -266,6 +259,39 @@
             }
 
         };
+        const button = document.getElementById("hiii")
+
+        var recognizing;
+        var recognition = new webkitSpeechRecognition();
+        recognition.continuous = true;
+        function reset() {
+            recognizing = false;
+        }
+        reset();
+        recognition.onend = reset();
+        recognition.onresult = async function (event) {
+            for (var i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    let tracks = await spotifyApi.search(q = event.results[i][0].transcript, type = ["track"], limit = 1)
+                    console.log(tracks)
+                    spotifyApi.play(options = {"uris": ["spotify:track:" + tracks.tracks.items[0].id]})
+
+                }
+            }
+        }
+        button.ontouchstart = function (e) {
+            e.target.style.animation = "pulse 2s infinite"
+            recognition.start();
+            recognizing = true;
+        }
+        button.ontouchend = async function (e) {
+            e.target.style.animation = ""
+            button.disabled = true
+            await new Promise(r => setTimeout(r, 1000));
+            recognition.stop();
+            reset();
+            button.disabled = false
+        }
         let isPlaying = false;
         let lastState = null;
         let lastTimestamp = 0;

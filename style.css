@@ -6,6 +6,7 @@
     --font-size-m: 24px;
     --font-size-s: 15px;
     --font-size-xs: 12px;
+    --font-size-xxs: 14px;
 
     --font-family-inter: "Inter", Helvetica;
 }
@@ -222,8 +223,173 @@ input[type=range]:focus::-webkit-slider-runnable-track {
     background: #ccc;
 }
 html{height: 100vh; overflow-y: hidden;}
+.topblock
+{
+    width: 266.6px;
+    height: 60px;
+    margin: 0px;
+    padding: 0px;
+    top: -20px;
+    background-color: #1DB954;
+    position:relative;
+    float:right;
+}
 .tite{
     text-align: center;
-    padding: 7px 0;
+    padding: 26px 0;
     font-size: 20px;
+    font-family: var(--font-family-inter), Helvetica;
+    color: #121212;
+    background-color: transparent;
+    font-style: normal;
+    font-weight: 4000;
+    letter-spacing: 0.00px;
+    line-height: normal;
+}
+.searchbutton {
+    background-color: #121212;
+    height: 420px;
+    overflow: hidden;
+    overflow-x: hidden;
+    position: relative;
+    width: 800px;
+}
+
+.searchbutton .ellipse-2-ab07IB {
+    background-color: transparent;
+    height: 182px;
+    left: 309px;
+    position: absolute;
+    top: 119px;
+    width: 182px;
+}
+
+.searchbutton .microphone-342-1-ab07IB {
+    background-color: transparent;
+    height: 86px;
+    left: 357px;
+    position: absolute;
+    top: 167px;
+    width: 86px;
+    transform: scale(1);
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.80);
+    }
+
+    70% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0.80);
+    }
+}
+.frame-1 {
+    background-color: #121212;
+    height: 420px;
+    overflow-y:scroll;
+    overflow-x: hidden;
+    position: relative;
+    width: 800px;
+}
+
+.frame-1 .group-2-VxPVnb {
+    background-color: transparent;
+    height: 90px;
+    left: 0px;
+    position: relative;
+    top: 25px;
+    width: 808px;
+}
+
+.frame-1 .rectangle-4-IHYDQL {
+    background-color: #535353;
+    border-radius: 28px;
+    height: 90px;
+    left: 0px;
+    position: absolute;
+    top: 0px;
+    width: 800px;
+}
+
+.frame-1 .ab67616d0000b273096a-IHYDQL {
+    background-color: transparent;
+    height: 70px;
+    left: 43px;
+    object-fit: cover;
+    position: absolute;
+    top: 10px;
+    width: 70px;
+}
+
+.frame-1 .title-IHYDQL {
+    background-color: transparent;
+    color: var(--white);
+    font-family: var(--font-family-inter);
+    font-size: var(--font-size-m);
+    font-style: normal;
+    font-weight: 400;
+    height: auto;
+    left: 145px;
+    letter-spacing: 0.00px;
+    line-height: normal;
+    position: absolute;
+    text-align: left;
+    top: -10px;
+    width: 599px;
+}
+
+.frame-1 .album-IHYDQL {
+    background-color: transparent;
+    color: var(--white);
+    font-family: var(--font-family-inter);
+    font-size: var(--font-size-s);
+    font-style: normal;
+    font-weight: 400;
+    height: auto;
+    left: 145px;
+    letter-spacing: 0.00px;
+    line-height: normal;
+    position: absolute;
+    text-align: left;
+    top: 36px;
+    width: 585px;
+}
+
+.frame-1 .artist-IHYDQL {
+    background-color: transparent;
+    color: var(--white);
+    font-family: var(--font-family-inter);
+    font-size: var(--font-size-s);
+    font-style: normal;
+    font-weight: 400;
+    height: auto;
+    left: 145px;
+    letter-spacing: 0.00px;
+    line-height: normal;
+    position: absolute;
+    text-align: left;
+    top: 58px;
+    white-space: nowrap;
+    width: 599px;
+}
+
+.frame-1 .x0000-IHYDQL {
+    background-color: transparent;
+    color: var(--white);
+    font-family: var(--font-family-inter);
+    font-size: var(--font-size-xxs);
+    font-style: normal;
+    font-weight: 400;
+    height: auto;
+    left: 739px;
+    letter-spacing: 0.00px;
+    line-height: normal;
+    position: absolute;
+    text-align: left;
+    top: 55px;
+    width: 41px;
 }
