@@ -40,13 +40,13 @@
     font-style: normal;
     font-weight: 400;
     height: auto;
-    left: 143px;
+    left: 0px;
     letter-spacing: 0.00px;
     line-height: normal;
     position: absolute;
     text-align: center;
     top: 230px;
-    width: 515px;
+    width: 800px;
 }
 
 .now-playing .album-q2Ud4x {
@@ -83,19 +83,11 @@
     width: 182px;
 }
 
-.now-playing .line-1-q2Ud4x {
-    background-color: transparent;
-    height: 1px;
-    left: 160px;
-    object-fit: cover;
-    position: absolute;
-    top: 376px;
-    width: 486px;
-}
+
 
 .now-playing .x000-q2Ud4x {
     left: 111px;
-    top: 370px;
+    top: 371px;
     width: 40px;
 }
 
@@ -156,7 +148,15 @@
 .now-playing .likeicon-1-q2Ud4x {
     background-color: transparent;
     height: 30px;
-    left: 100px;
+    left: 60px;
+    position: absolute;
+    top: 362px;
+    width: 30px;
+}
+.now-playing .notlikeicon-1-q2Ud4x {
+    background-color: transparent;
+    height: 30px;
+    left: 60px;
     position: absolute;
     top: 362px;
     width: 30px;
@@ -187,4 +187,43 @@
     line-height: normal;
     position: absolute;
     text-align: center;
+}
+
+.progressbar
+{
+    position: absolute;
+    top: 373px;
+    left: 150px;
+    width:500px;
+    height: 5px;
+
+}
+input[type=range]{
+    -webkit-appearance: none;
+    border-radius: 17px;
+    background: linear-gradient(to right, #1DB954 0%, #1DB954 50%, #fff 50%, #fff 100%);
+}
+
+
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: #fff;
+}
+input[type=range]:focus {
+    outline: none;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #ccc;
+}
+html{height: 100vh; overflow-y: hidden;}
+.tite{
+    text-align: center;
+    padding: 7px 0;
+    font-size: 20px;
 }

@@ -88,24 +88,29 @@ function refreshToken() {
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
         },
         body: new URLSearchParams({
-            client_id,
             grant_type: 'refresh_token',
-            refresh_token,
+            refresh_token: refresh_token,
+            client_id: client_id
         }),
+
     })
         .then(addThrowErrorToFetch)
         .then(processTokenResponse)
-        .catch(handleError);
+        .catch(handleError1);
 }
 
 function handleError(error) {
     console.error(error);
-    mainPlaceholder.innerHTML = errorTemplate({
-        status: error.response.status,
-        message: error.error.error_description,
-    });
 }
-
+function handleError1(error) {
+    console.error(error);
+    console.log(error.error.error_description)
+    if (error.error.error_description === "Invalid refresh token")
+    {
+        localStorage.clear()
+        window.location.href = "http://localhost:808/auth.html"
+    }
+}
 async function addThrowErrorToFetch(response) {
     if (response.ok) {
         return response.json();
@@ -125,7 +130,7 @@ function processTokenResponse(data) {
     refresh_token = data.refresh_token;
 
     const t = new Date();
-    expires_at = t.setSeconds(t.getSeconds() + data.expires_in);
+    expires_at = t.setSeconds(t.getSeconds() + 3600);
 
     localStorage.setItem('access_token', access_token);
     localStorage.setItem('refresh_token', refresh_token);

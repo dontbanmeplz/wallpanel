@@ -104,8 +104,9 @@ var SpotifyWebApi = (function () {
           var data = null;
           try {
             data = req.responseText ? JSON.parse(req.responseText) : '';
+
           } catch (e) {
-            console.error(e);
+            //console.error(e);
           }
 
           if (req.status >= 200 && req.status < 300) {

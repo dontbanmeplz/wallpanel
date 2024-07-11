@@ -1,19 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>
-        Example of the Authorization Code Flow with Proof Key for Code Exchange
-        (PKCE) with Spotify
-    </title>
-    <meta name="viewport" content="width=device-width" />
-    <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-    />
-    <link
-            rel="stylesheet"
-            href="/style.css"
-    />
+    <title>Example of the Authorization Code Flow with Proof Key for Code Exchange (PKCE) with Spotify</title>
+    <meta content="width=device-width" name="viewport">
+    <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet">
+    <link href="/style.css" rel="stylesheet">
     <style>
         .swiper {
             width: 100VW;
@@ -56,9 +47,12 @@
         }
 
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js">
+    </script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js">
+    </script>
+    <script src="auth.js">
+    </script>
     <script>
 
         const client_id = '4f3c759785c549bf9eb5dff8c14ceeb5';
@@ -68,8 +62,6 @@
         let access_token = localStorage.getItem('access_token') || null;
         let refresh_token = localStorage.getItem('refresh_token') || null;
         let expires_at = localStorage.getItem('expires_at') || null;
-        refreshToken()
-        refresh_token = localStorage.getItem('refresh_token') || null;
         // If the user has accepted the authorize request spotify will come back to your application with the code in the response query string
         // Example: http://127.0.0.1:8080/?code=NApCCg..BkWtQ&state=profile%2Factivity
         const args = new URLSearchParams(window.location.search);
@@ -89,38 +81,47 @@
 
     </script>
 </head>
+<body>
 <div class="swiper">
     <!-- Additional required wrapper -->
     <div class="swiper-wrapper" id="hhh">
         <!-- Slides -->
-        <div class="swiper-slide" >
-            <div class="slidecontainer" >
-                <div id= "b1" class="topblock"></div>
-                <div id= "b2" class="topblock active"></div>
-                <div id= "b3" class="topblock"></div>
-                <div id = "bdy1" class = "bdy hide">
-                </div>
-                <div id = "bdy2" class = "bdy">
+        <div class="swiper-slide">
+            <div class="slidecontainer">
+                <div class="topblock" id="b1"><p class="tite">Playlists</p></div>
+                <div class="topblock active" id="b2"><p class="tite">Now Playing</p></div>
+                <div class="topblock" id="b3"><p class="tite">Search</p></div>
+                <div class="bdy hide" id="bdy1"></div>
+                <div class="bdy" id="bdy2">
                     <!--<h2 id="name">Nothing Playing</h2>
-                    <br>
-                    <button id="togglePlay">Toggle Play</button>
-                    <input type="range" id="points" name="points" min="0" max="10" value="0" style="width:400px;">
-                    <p id="time"></p> -->
-                    <div class="now-playing screen" ><img class="ab67616d0000b273096a-q2Ud4x" id = "trackimg" src="/img/ab67616d0000b273096a7fc9668305db9d3175fc-1.png" alt="ab67616d0000b273096a7fc9668305db9d3175fc 1">
+                <br>
+                <button id="togglePlay">Toggle Play</button>
+                <input type="range" id="points" name="points" min="0" max="10" value="0" style="width:400px;">
+                <p id="time"></p> -->
+                    <div class="now-playing screen">
+                        <img alt="ab67616d0000b273096a7fc9668305db9d3175fc 1" class="ab67616d0000b273096a-q2Ud4x" id="trackimg" src="/img/ab67616d0000b273096a7fc9668305db9d3175fc-1.png">
                         <h1 class="title-q2Ud4x" id="name">Nothing Playing</h1>
-                        <div class="album-q2Ud4x" id="album">Album</div>
-                        <div class="artist-q2Ud4x" id="artist" >Artist</div>
-                        <input type="range" id="points" name="points" min="0" max="10" value="0" style="width:400px;" class="hide">
-                        <div class="x000-q2Ud4x x000" id="posit">0:00</div>
+                        <div class="album-q2Ud4x" id="album">
+                            Album
+                        </div>
+                        <div class="artist-q2Ud4x" id="artist">
+                            Artist
+                        </div>
+                        <div id="hi">
+                            <input class="progressbar" id="points" max="10" min="0" name="points" type="range" value="0">
+                        </div>
+                        <div class="x000-q2Ud4x x000" id="posit">
+                            0:00
+                        </div>
                         <div class="group-1-q2Ud4x" id="togglePlay">
-                            <div class="ellipse-1-bJ8vx4"></div><img class="playicon-1-bJ8vx4" src="/img/playicon.svg" id="play" alt="playicon 1"><img class="playicon-1-bJ8vx4 hide" id = "pause" src="/img/pauseicon.svg" alt="playicon 1">
-                        </div><img class="previousicon-1-q2Ud4x" src="/img/previousicon.svg" alt="previousicon 1"><img class="nexticon-1-q2Ud4x" src="/img/nexticon.svg"><img class="queueicon-1-q2Ud4x"src="/img/queueicon.svg">
-                        <img class="likeicon-1-q2Ud4x"src="/img/hearticon.svg">
-                        <div class="x000-rUm8rt x000" id="durration">0:00</div>
+                            <div class="ellipse-1-bJ8vx4"></div><img alt="playicon 1" class="playicon-1-bJ8vx4" id="play" src="/img/playicon.svg"><img alt="playicon 1" class="playicon-1-bJ8vx4 hide" id="pause" src="/img/pauseicon.svg"></div><img alt="previousicon 1" class="previousicon-1-q2Ud4x" id="back" src="/img/previousicon.svg"><img class="nexticon-1-q2Ud4x" id="skip" src="/img/nexticon.svg"><img class="queueicon-1-q2Ud4x" src="/img/queueicon.svg">
+                        <div id="hearts"><img class="likeicon-1-q2Ud4x hide" id="like" src="/img/hearticon.svg"> <img class="likeicon-1-q2Ud4x" id="notlike" src="/img/heartoutlineicon.svg"></div>
+                        <div class="x000-rUm8rt x000" id="durration">
+                            0:00
+                        </div>
                     </div>
                 </div>
-                <div id = "bdy3" class = "bdy hide">
-                </div>
+                <div class="bdy hide" id="bdy3"></div>
             </div>
         </div>
         <div class="swiper-slide">
@@ -128,7 +129,9 @@
                 slide 2
             </div>
         </div>
-        <div class="swiper-slide">Slide 3</div>
+        <div class="swiper-slide">
+            Slide 3
+        </div>
     </div>
 </div>
 <script>
@@ -174,11 +177,21 @@
         output.innerHTML = this.value;
     }
 </script>
-
-<script src="https://sdk.scdn.co/spotify-player.js"></script>
-<script src="spotify-web-api.js"></script>
+<script src="https://sdk.scdn.co/spotify-player.js">
+</script>
+<script src="spotify-web-api.js">
+</script>
 <script>
-    window.onSpotifyWebPlaybackSDKReady = () => {
+    let c1 = "#fff"
+    let c2 = "#4D4D4D"
+    const spotifyApi = new SpotifyWebApi();
+    spotifyApi.setAccessToken(access_token);
+    function rrefreshtoken() {
+        refreshToken()
+        refresh_token = localStorage.getItem("refresh_token")
+        spotifyApi.setAccessToken(access_token);
+    }
+    window.onSpotifyWebPlaybackSDKReady = async () => {
         const seekBar = document.getElementById("points");
         const name = document.getElementById("name");
         const t1 = document.getElementById("posit");
@@ -187,63 +200,87 @@
         var song = "";
         var dur = 0
         let token = access_token;
-        const player = new Spotify.Player({
+        player = new Spotify.Player({
             name: 'Web Playback SDK Quick Start Player',
             getOAuthToken: cb => {
-                refreshToken()
+                rrefreshtoken()
+                access_token = localStorage.getItem("access_token")
+                spotifyApi.setAccessToken(access_token);
                 cb(access_token);
-                },
+            },
             volume: 0.5
         });
-        const spotifyApi = new SpotifyWebApi();
-        spotifyApi.setAccessToken(access_token);
+
 
         // Ready
-        player.addListener('ready', ({ device_id }) => {
+        player.addListener('ready', ({device_id}) => {
             console.log('Ready with Device ID', device_id);
             spotifyApi.transferMyPlayback([device_id])
         });
 
         // Not Ready
-        player.addListener('not_ready', ({ device_id }) => {
+        player.addListener('not_ready', ({device_id}) => {
             console.log('Device ID has gone offline', device_id);
         });
 
-        player.addListener('initialization_error', ({ message }) => {
+        player.addListener('initialization_error', ({message}) => {
             console.error(message);
         });
 
-        player.addListener('authentication_error', ({ message }) => {
+        player.addListener('authentication_error', ({message}) => {
             refreshToken();
-            window.location.reload();
             console.error(message);
         });
 
-        player.addListener('account_error', ({ message }) => {
+        player.addListener('account_error', ({message}) => {
             console.error(message);
         });
 
-        document.getElementById('togglePlay').onclick = function() {
+        document.getElementById('togglePlay').onclick = function () {
             player.togglePlay();
+        };
+        document.getElementById('skip').onclick = function () {
+            spotifyApi.skipToNext()
+        };
+        document.getElementById('hearts').onclick = async function () {
 
+            let p = await spotifyApi.getMyCurrentPlaybackState()
+            let a = await spotifyApi.containsMySavedTracks([p.item.id])
+            if (a[0]) {
+                await spotifyApi.removeFromMySavedTracks([p.item.id])
+                document.getElementById("like").className = "likeicon-1-q2Ud4x hide"
+                document.getElementById("notlike").className = "likeicon-1-q2Ud4x"
+
+            } else {
+                await spotifyApi.addToMySavedTracks([p.item.id])
+                document.getElementById("like").className = "likeicon-1-q2Ud4x"
+                document.getElementById("notlike").className = "likeicon-1-q2Ud4x hide"
+            }
+        };
+        document.getElementById('back').onclick = async function () {
+            var x = await spotifyApi.getMyCurrentPlaybackState();
+            if (x.progress_ms > 5000) {
+                player.seek(0)
+            } else {
+                spotifyApi.skipToPrevious()
+            }
 
         };
         let isPlaying = false;
         let lastState = null;
         let lastTimestamp = 0;
-        player.addListener('player_state_changed', ({
-                                                        position,
-                                                        duration,
-                                                        track_window: { current_track },
-                                                        paused
-                                                    }) => {
-            if (position === null){
+        player.addListener('player_state_changed', async ({
+                                                              position,
+                                                              duration,
+                                                              track_window: {current_track},
+                                                              paused
+                                                          }) => {
+            if (position === null) {
                 position = 0
             }
             lastState = position;
             lastTimestamp = Date.now();
-            if (song !== current_track.name)
-            {
+            if (song !== current_track.name) {
                 song = current_track.name;
                 name.innerText = current_track.name;
                 position = 0
@@ -256,27 +293,32 @@
             isPlaying = !paused;
             let f = document.getElementById("togglePlay").getElementsByTagName('img');
             for (let e of f) {
-                if (e.id === "play" && !paused)
-                {
-                    e.className ="playicon-1-bJ8vx4 hide"
+                if (e.id === "play" && !paused) {
+                    e.className = "playicon-1-bJ8vx4 hide"
+                } else if (e.id === "play" && paused) {
+                    e.className = "playicon-1-bJ8vx4"
                 }
-                else if (e.id === "play" && paused)
-                {
-                    e.className ="playicon-1-bJ8vx4"
-                }
-                if (e.id === "pause" && paused)
-                {
-                    e.className ="playicon-1-bJ8vx4 hide"
-                }
-                else if (e.id === "pause" && !paused)
-                {
-                    e.className ="playicon-1-bJ8vx4"
+                if (e.id === "pause" && paused) {
+                    e.className = "playicon-1-bJ8vx4 hide"
+                } else if (e.id === "pause" && !paused) {
+                    e.className = "playicon-1-bJ8vx4"
                 }
             }
             document.getElementById("trackimg").src = current_track.album.images[0].url;
             document.getElementById("album").innerText = current_track.album.name;
             document.getElementById("artist").innerText = current_track.artists[0].name;
+            let p = await spotifyApi.getMyCurrentPlaybackState()
+            let a = await spotifyApi.containsMySavedTracks([p.item.id])
+            if (a[0]){
+                document.getElementById("like").className = "likeicon-1-q2Ud4x"
+                document.getElementById("notlike").className = "likeicon-1-q2Ud4x hide"
+            }
+            else{
+                document.getElementById("like").className = "likeicon-1-q2Ud4x hide"
+                document.getElementById("notlike").className = "likeicon-1-q2Ud4x"
+            }
         });
+
         function mtms(millis) {
             var minutes = Math.floor(millis / 60000);
             var seconds = ((millis % 60000) / 1000).toFixed(0);
@@ -297,17 +339,35 @@
             if (parseInt(seekBar.value) > parseInt(seekBar.max)) {
                 seekBar.value = lastState;
             }
+            x = (seekBar.value/seekBar.max)* 100
+            $( seekBar ).css( 'background', 'linear-gradient(to right, ' + c1 +' 0%, '+c1+' '+ x +'%, '+c2+' ' + x + '%, '+c2+' 100%)' );
             requestAnimationFrame(updateSeekBar);
         }
+
         requestAnimationFrame(updateSeekBar);
         player.connect();
+        // green = #1DB954
+        var ltime = new Date();
         seekBar.oninput = (e) => {
-            player.seek(e.target.value).then(() => {
-                lastTimestamp = Date.now();
-                //console.log(e.target.value)
-                lastState = parseInt(e.target.value);
-            });
+
+            x = (e.target.value/e.target.max)* 100
+            $( e.target ).css( 'background', 'linear-gradient(to right, ' + c1 +' 0%, '+c1+' '+ x +'%, '+c2+' ' + x + '%, '+c2+' 100%)' );
+            t1.innerText = mtms(e.target.value);
+            if (new Date - ltime > 200) {
+                player.seek(e.target.value).then(() => {
+                    lastTimestamp = Date.now();
+                    //console.log(e.target.value)
+                    lastState = parseInt(e.target.value);
+                });
+                ltime = new Date;
+            }
         };
+        seekBar.onmousedown = (e) => {
+            c1 = "#1DB954"
+        }
+        seekBar.onmouseup = (e) => {
+            c1 = "#fff"
+        }
 
 
     }
@@ -316,10 +376,11 @@
         access_token = localStorage.getItem("access_token")
         spotifyApi.setAccessToken(access_token);
     }
+    /* $( 'input[type=range]' ).on( 'input', function( ) {
+        x = (this.value/this.max)* 100
+        $( this ).css( 'background', 'linear-gradient(to right, #1DB954 0%, #1DB954 '+ x +'%, #fff ' + x + '%, white 100%)' );
+    } ); */
 </script>
+<footer></footer>
 </body>
-<footer>
-
-</footer>
-
 </html>
