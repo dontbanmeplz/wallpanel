@@ -109,9 +109,9 @@
                     </div>
                 </div>
                 <div class="bdy hide" id="bdy3">
-                    <div  class="searchbutton screen" id = "hiii" >
+                    <div  class="searchbutton screen"  >
                         <img class="ellipse-2-ab07IB" src="https://cdn.animaapp.com/projects/627bc3864a350444b8da3ce4/releases/668f33530373c280a6ab42fd/img/ellipse-2.svg" alt="Ellipse 2">
-                        <img  class="microphone-342-1-ab07IB" src="https://cdn.animaapp.com/projects/627bc3864a350444b8da3ce4/releases/668f33530373c280a6ab42fd/img/microphone-342-1.svg" alt="microphone-342 1">
+                        <img  id = "hiii" class="microphone-342-1-ab07IB" src="https://cdn.animaapp.com/projects/627bc3864a350444b8da3ce4/releases/668f33530373c280a6ab42fd/img/microphone-342-1.svg" alt="microphone-342 1">
                     </div>
                 </div>
             </div>
@@ -185,8 +185,6 @@
         spotifyApi.setAccessToken(access_token);
     }
     window.onSpotifyWebPlaybackSDKReady = async () => {
-
-        const speech = window.SpeechRecognition || window.webkitSpeechRecognition;
         const seekBar = document.getElementById("points");
         const name = document.getElementById("name");
         const t1 = document.getElementById("posit");
@@ -263,8 +261,8 @@
         };
         const button = document.getElementById("hiii")
 
-        /*var recognizing;
-        var recognition = new speech();
+        var recognizing;
+        var recognition = new webkitSpeechRecognition();
         recognition.continuous = true;
         function reset() {
             recognizing = false;
@@ -293,7 +291,7 @@
             recognition.stop();
             reset();
             button.disabled = false
-        }*/
+        }
         let isPlaying = false;
         let lastState = null;
         let lastTimestamp = 0;
