@@ -108,7 +108,7 @@ function handleError1(error) {
     if (error.error.error_description === "Invalid refresh token")
     {
         localStorage.clear()
-        window.location.href = "http://localhost:8000/auth.html"
+        window.location.href = "http://localhost:8000/"
     }
 }
 async function addThrowErrorToFetch(response) {
