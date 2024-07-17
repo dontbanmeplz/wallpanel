@@ -227,7 +227,12 @@ var SpotifyWebApi = (function () {
     };
     return _checkParamsAndPerformRequest(requestData, options, callback);
   };
-
+  Constr.prototype.getQueue = function (options, callback) {
+    var requestData = {
+      url: _baseUri + '/me/player/queue'
+    };
+    return _checkParamsAndPerformRequest(requestData, options, callback);
+  };
   /**
    * Adds a list of tracks to the current user's saved tracks.
    * See [Save Tracks for Current User](https://developer.spotify.com/web-api/save-tracks-user/) on

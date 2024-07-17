@@ -1,4 +1,27 @@
-
+.bdy{
+    width: 100vw;
+    height: calc(100vh - 60px);
+    top: 62px
+}
+.hide
+{
+    display: none;
+}
+.topblock.active {
+    top: -18px;
+    box-shadow: none;
+}
+h2, p {
+    color: #b3b3b3;
+}
+.swiper {
+    width: 100VW;
+    height: 100vh;
+    margin: 0px;
+    left: -8px;
+    top: -8px;
+    background: #121212;
+}
 :root {
     --black: #000000;
     --white: #ffffff;
@@ -236,13 +259,12 @@ html{height: 100vh; overflow-y: hidden;}
 }
 .tite{
     text-align: center;
-    padding: 26px 0;
+    margin-top: 26px;
     font-size: 20px;
     font-family: var(--font-family-inter), Helvetica;
     color: #121212;
     background-color: transparent;
     font-style: normal;
-    font-weight: 4000;
     letter-spacing: 0.00px;
     line-height: normal;
 }
@@ -396,14 +418,16 @@ html{height: 100vh; overflow-y: hidden;}
 
 .frame-1 {
     background-color: #121212;
-    height: 420px;
+    top: -20px;
+    height: 440px;
     overflow: hidden;
-    overflow-x: hidden;
     position: relative;
     width: 800px;
-    overflow-y:auto
+    overflow-y:auto;
 }
-
+.frame-1.close{
+    display: none;
+}
 .frame-1 .group-2-VxPVnb {
     background-color: transparent;
     height: 90px;
@@ -419,7 +443,7 @@ html{height: 100vh; overflow-y: hidden;}
     height: 90px;
     left: 10px;
     position: absolute;
-    top: 0px;
+    top: 0;
     width: 780px;
 }
 
@@ -500,4 +524,12 @@ html{height: 100vh; overflow-y: hidden;}
     text-align: left;
     top: 60px;
     width: 41px;
+}
+.frame-1 .trash {
+    background-color: transparent;
+    color: var(--white);
+    left: 735px;
+    position: absolute;
+    top: 15px;
+    width: 25px;
 }

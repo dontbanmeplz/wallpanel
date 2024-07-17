@@ -1,74 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Example of the Authorization Code Flow with Proof Key for Code Exchange (PKCE) with Spotify</title>
+    <title>Web Panel</title>
     <meta content="width=device-width" name="viewport">
     <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet">
     <link href="/style.css" rel="stylesheet">
-    <style>
-        .swiper {
-            width: 100VW;
-            height: 100vh;
-            margin: 0px;
-            left: -8px;
-            top: -8px;
-            background: #121212;
-        }
-
-    </style>
-    <style>
-
-        .bdy{
-            width: 100vw;
-            height: calc(100vh - 60px);
-            top: 62px
-        }
-        .hide
-        {
-            display: none;
-        }
-        .div:active,
-        .active {
-            top: -18px;
-            box-shadow: none;
-        }
-        h2, p {
-            color: #b3b3b3;
-        }
-
-    </style>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js">
     </script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js">
     </script>
-    <script src="auth.js">
+    <script src="/auth.js">
     </script>
-    <script>
-
-        const client_id = '4f3c759785c549bf9eb5dff8c14ceeb5';
-        const redirect_uri = 'http://localhost:8000/auth.html'; // Your redirect uri
-
-        // Restore tokens from localStorage
-        let access_token = localStorage.getItem('access_token') || null;
-        let refresh_token = localStorage.getItem('refresh_token') || null;
-        let expires_at = localStorage.getItem('expires_at') || null;
-        // If the user has accepted the authorize request spotify will come back to your application with the code in the response query string
-        // Example: http://127.0.0.1:8080/?code=NApCCg..BkWtQ&state=profile%2Factivity
-        const args = new URLSearchParams(window.location.search);
-        const code = args.get('code');
-
-        if (code) {
-            // we have received the code from spotify and will exchange it for a access_token
-            exchangeToken(code);
-        } else if (access_token && refresh_token && expires_at) {
-            // we are already authorized and reload our tokens from localStorage
-
-            getUserData();
-        } else {
-            // we are not logged in so show the login button
-            redirectToSpotifyAuthorizeEndpoint()
-        }
-
+    <script src="/bef.js">
+    </script>
+    <script type="text/javascript" src="https://sdk.scdn.co/spotify-player.js">
+    </script>
+    <script type="text/javascript" src="spotify-web-api.js">
     </script>
 </head>
 <body>
@@ -82,6 +29,8 @@
                 <div class="topblock active" id="b2"><div class="tite">Now Playing</div></div>
                 <div class="topblock" id="b1"><div class="tite">Playlists</div></div>
                 <div class="bdy hide" id="bdy1">
+                </div>
+                <div class="frame-1 screen close" id="qeee">
 
                 </div>
                 <div class="bdy" id="bdy2">
@@ -101,12 +50,13 @@
                             0:00
                         </div>
                         <div class="group-1-q2Ud4x" id="togglePlay">
-                            <div class="ellipse-1-bJ8vx4"></div><img alt="playicon 1" class="playicon-1-bJ8vx4" id="play" src="/img/playicon.svg"><img alt="playicon 1" class="playicon-1-bJ8vx4 hide" id="pause" src="/img/pauseicon.svg"></div><img alt="previousicon 1" class="previousicon-1-q2Ud4x" id="back" src="/img/previousicon.svg"><img class="nexticon-1-q2Ud4x" id="skip" src="/img/nexticon.svg"><img class="queueicon-1-q2Ud4x" src="/img/queueicon.svg">
+                            <div class="ellipse-1-bJ8vx4"></div><img alt="playicon 1" class="playicon-1-bJ8vx4" id="play" src="/img/playicon.svg"><img alt="playicon 1" class="playicon-1-bJ8vx4 hide" id="pause" src="/img/pauseicon.svg"></div><img alt="previousicon 1" class="previousicon-1-q2Ud4x" id="back" src="/img/previousicon.svg"><img class="nexticon-1-q2Ud4x" id="skip" src="/img/nexticon.svg"><img id="queue" class="queueicon-1-q2Ud4x" src="/img/queueicon.svg">
                         <div id="hearts"><img class="likeicon-1-q2Ud4x hide" id="like" src="/img/hearticon.svg"> <img class="likeicon-1-q2Ud4x" id="notlike" src="/img/heartoutlineicon.svg"></div>
                         <div class="x000-rUm8rt x000" id="durration">
                             0:00
                         </div>
                     </div>
+
 
                 </div>
                 <div class="bdy hide" id="bdy3">
@@ -128,37 +78,7 @@
     </div>
 </div>
 <script>
-    const swiper = new Swiper('.swiper', {
-        // Optional parameters
-        loop: true
-    });
-    swiper.on('touchStart', (e) => {
-        swiper.allowTouchMove = true
-        let x = document.elementFromPoint(e.touches.currentX, e.touches.currentY);
-        if (x.id === "points"){
-            swiper.allowTouchMove = false
-        }
-    });
-    swiper.on('slideChange', (e) => {
-        $( ".topblock" ).each(function( ) {
-            this.className = "topblock"
-        });
-        document.getElementById("b2").className = "topblock active";
-        $( ".bdy" ).each(function( ) {
-            this.className = "bdy hide"
-        });
-        document.getElementById("bdy2").className = "bdy";
-    });
-    $('.topblock').click(function(){
-        $( ".topblock" ).each(function( ) {
-            this.className = "topblock"
-        });
-        this.className = "topblock active"
-        $( ".bdy" ).each(function( ) {
-            this.className = "bdy hide"
-        });
-        document.getElementById("bdy" + this.id.split("")[1]).className = "bdy";
-    });
+
 
 </script>
 <script>
@@ -171,243 +91,12 @@
         output.innerHTML = this.value;
     }
 </script>
-<script src="https://sdk.scdn.co/spotify-player.js">
+
 </script>
-<script src="spotify-web-api.js">
-</script>
-<script>
-    let c1 = "#fff"
-    let c2 = "#4D4D4D"
-    const spotifyApi = new SpotifyWebApi();
-    spotifyApi.setAccessToken(access_token);
-    function rrefreshtoken() {
-        refreshToken()
-        refresh_token = localStorage.getItem("refresh_token")
-        spotifyApi.setAccessToken(access_token);
-    }
-    window.onSpotifyWebPlaybackSDKReady = async () => {
-        const seekBar = document.getElementById("points");
-        const name = document.getElementById("name");
-        const t1 = document.getElementById("posit");
-        const t2 = document.getElementById("durration");
-        var n = 0;
-        var song = "";
-        var dur = 0
-        let token = access_token;
-        player = new Spotify.Player({
-            name: 'Web Playback SDK Quick Start Player',
-            getOAuthToken: cb => {
-                rrefreshtoken()
-                access_token = localStorage.getItem("access_token")
-                spotifyApi.setAccessToken(access_token);
-                cb(access_token);
-            },
-            volume: 0.5
-        });
+<footer>
 
-
-        // Ready
-        player.addListener('ready', ({device_id}) => {
-            console.log('Ready with Device ID', device_id);
-            spotifyApi.transferMyPlayback([device_id])
-        });
-
-        // Not Ready
-        player.addListener('not_ready', ({device_id}) => {
-            console.log('Device ID has gone offline', device_id);
-        });
-
-        player.addListener('initialization_error', ({message}) => {
-            console.error(message);
-        });
-
-        player.addListener('authentication_error', ({message}) => {
-            refreshToken();
-            console.error(message);
-        });
-
-        player.addListener('account_error', ({message}) => {
-            console.error(message);
-        });
-
-        document.getElementById('togglePlay').onclick = function () {
-            player.togglePlay();
-        };
-        document.getElementById('skip').onclick = function () {
-            spotifyApi.skipToNext()
-        };
-        document.getElementById('hearts').onclick = async function () {
-
-            let p = await spotifyApi.getMyCurrentPlaybackState()
-            let a = await spotifyApi.containsMySavedTracks([p.item.id])
-            if (a[0]) {
-                await spotifyApi.removeFromMySavedTracks([p.item.id])
-                document.getElementById("like").className = "likeicon-1-q2Ud4x hide"
-                document.getElementById("notlike").className = "likeicon-1-q2Ud4x"
-
-            } else {
-                await spotifyApi.addToMySavedTracks([p.item.id])
-                document.getElementById("like").className = "likeicon-1-q2Ud4x"
-                document.getElementById("notlike").className = "likeicon-1-q2Ud4x hide"
-            }
-        };
-        document.getElementById('back').onclick = async function () {
-            var x = await spotifyApi.getMyCurrentPlaybackState();
-            if (x.progress_ms > 5000) {
-                player.seek(0)
-            } else {
-                spotifyApi.skipToPrevious()
-            }
-
-        };
-        const button = document.getElementById("hiii")
-
-        var recognizing;
-        var recognition = new webkitSpeechRecognition();
-        recognition.continuous = true;
-        function reset() {
-            recognizing = false;
-        }
-        reset();
-        recognition.onend = reset();
-        recognition.onresult = async function (event) {
-            for (var i = event.resultIndex; i < event.results.length; ++i) {
-                if (event.results[i].isFinal) {
-                    let tracks = await spotifyApi.search(q = event.results[i][0].transcript, type = ["track"], limit = 1)
-                    console.log(tracks)
-                    spotifyApi.play(options = {"uris": ["spotify:track:" + tracks.tracks.items[0].id]})
-
-                }
-            }
-        }
-        button.ontouchstart = function (e) {
-            e.target.style.animation = "pulse 2s infinite"
-            recognition.start();
-            recognizing = true;
-        }
-        button.ontouchend = async function (e) {
-            e.target.style.animation = ""
-            button.disabled = true
-            await new Promise(r => setTimeout(r, 1000));
-            recognition.stop();
-            reset();
-            button.disabled = false
-        }
-        let isPlaying = false;
-        let lastState = null;
-        let lastTimestamp = 0;
-        player.addListener('player_state_changed', async ({
-                                                              position,
-                                                              duration,
-                                                              track_window: {current_track},
-                                                              paused
-                                                          }) => {
-            if (position === null) {
-                position = 0
-            }
-            lastState = position;
-            lastTimestamp = Date.now();
-            if (song !== current_track.name) {
-                song = current_track.name;
-                name.innerText = current_track.name;
-                position = 0
-            }
-            seekBar.max = duration;
-            dur = duration;
-            seekBar.value = position
-            t1.innerText = mtms(position);
-            t2.innerText = mtms(duration)
-            isPlaying = !paused;
-            let f = document.getElementById("togglePlay").getElementsByTagName('img');
-            for (let e of f) {
-                if (e.id === "play" && !paused) {
-                    e.className = "playicon-1-bJ8vx4 hide"
-                } else if (e.id === "play" && paused) {
-                    e.className = "playicon-1-bJ8vx4"
-                }
-                if (e.id === "pause" && paused) {
-                    e.className = "playicon-1-bJ8vx4 hide"
-                } else if (e.id === "pause" && !paused) {
-                    e.className = "playicon-1-bJ8vx4"
-                }
-            }
-            document.getElementById("trackimg").src = current_track.album.images[0].url;
-            document.getElementById("album").innerText = current_track.album.name;
-            document.getElementById("artist").innerText = current_track.artists[0].name;
-            let p = await spotifyApi.getMyCurrentPlaybackState()
-            let a = await spotifyApi.containsMySavedTracks([p.item.id])
-            if (a[0]){
-                document.getElementById("like").className = "likeicon-1-q2Ud4x"
-                document.getElementById("notlike").className = "likeicon-1-q2Ud4x hide"
-            }
-            else{
-                document.getElementById("like").className = "likeicon-1-q2Ud4x hide"
-                document.getElementById("notlike").className = "likeicon-1-q2Ud4x"
-            }
-        });
-
-        function mtms(millis) {
-            var minutes = Math.floor(millis / 60000);
-            var seconds = ((millis % 60000) / 1000).toFixed(0);
-            return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
-        }
-
-        function updateSeekBar() {
-            const seekBar = document.getElementById('points');
-            const t = document.getElementById("time")
-            const elapsedTime = Date.now() - lastTimestamp;
-            let position = lastState + elapsedTime;
-            if (isPlaying) {
-                seekBar.value = position;
-                //console.log(position)
-                t1.innerText = mtms(position);
-                t2.innerText = mtms(dur)
-            }
-            if (parseInt(seekBar.value) > parseInt(seekBar.max)) {
-                seekBar.value = lastState;
-            }
-            x = (seekBar.value/seekBar.max)* 100
-            $( seekBar ).css( 'background', 'linear-gradient(to right, ' + c1 +' 0%, '+c1+' '+ x +'%, '+c2+' ' + x + '%, '+c2+' 100%)' );
-            requestAnimationFrame(updateSeekBar);
-        }
-
-        requestAnimationFrame(updateSeekBar);
-        player.connect();
-        // green = #1DB954
-        var ltime = new Date();
-        seekBar.oninput = (e) => {
-
-            x = (e.target.value/e.target.max)* 100
-            $( e.target ).css( 'background', 'linear-gradient(to right, ' + c1 +' 0%, '+c1+' '+ x +'%, '+c2+' ' + x + '%, '+c2+' 100%)' );
-            t1.innerText = mtms(e.target.value);
-            if (new Date - ltime > 200) {
-                player.seek(e.target.value).then(() => {
-                    lastTimestamp = Date.now();
-                    //console.log(e.target.value)
-                    lastState = parseInt(e.target.value);
-                });
-                ltime = new Date;
-            }
-        };
-        seekBar.onmousedown = (e) => {
-            c1 = "#1DB954"
-        }
-        seekBar.onmouseup = (e) => {
-            c1 = "#fff"
-        }
-
-
-    }
-    function fixtoken() {
-        refreshToken()
-        access_token = localStorage.getItem("access_token")
-        spotifyApi.setAccessToken(access_token);
-    }
-    /* $( 'input[type=range]' ).on( 'input', function( ) {
-        x = (this.value/this.max)* 100
-        $( this ).css( 'background', 'linear-gradient(to right, #1DB954 0%, #1DB954 '+ x +'%, #fff ' + x + '%, white 100%)' );
-    } ); */
-</script>
-<footer></footer>
+    <script type="text/javascript" src="/ess.js"></script>
+    <script type="text/javascript" src="/load.js"></script>
+</footer>
 </body>
 </html>
