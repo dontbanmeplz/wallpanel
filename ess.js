@@ -1,3 +1,6 @@
+var queue = JSON.parse(localStorage.getItem('queue')) || [];
+var pos = parseInt(localStorage.getItem('pos')) || 0;
+var cqueue = JSON.parse(localStorage.getItem('cqueue')) || {};
 const swiper = new Swiper('.swiper', {
     // Optional parameters
     loop: true
@@ -9,16 +12,7 @@ swiper.on('touchStart', (e) => {
         swiper.allowTouchMove = false
     }
 });
-$('#queue').click(async function () {
-    const f1 = document.getElementById("qeee");
-    f1.innerHTML = "";
-    var qdata = await spotifyApi.getQueue();
-    for (const e in qdata.queue) {
-        var d = qdata.queue[e]
-        f1.insertAdjacentHTML("beforeend", "<div class=\"group-2-VxPVnb\">\r\n                        <div class=\"rectangle-4-IHYDQL\">\r\n                        <\/div>\r\n                        <img class=\"ab67616d0000b273096a-IHYDQL\" src=\"" + d.album.images[0].url + "\">\r\n                        <h1 class=\"title-IHYDQL\">" + d.name + "<\/h1>\r\n                        <div class=\"album-IHYDQL\">" + d.album.name + "<\/div>\r\n                        <div class=\"artist-IHYDQL\">" + d.artists[0].name + "<\/div>\r\n       <img class=\"trash\" src=\"/img/trash.svg\" onclick='trash(" + d.id + ")'>                <div class=\"x0000-IHYDQL\">" + mtms(d.duration_ms) + "<\/div>\r\n                    <\/div> \r\n <br>");
-    }
-    $('.frame-1').toggleClass("close")
-});
+
 swiper.on('slideChange', (e) => {
     document.getElementById("qeee").className = "frame-1 screen close";
     $( ".topblock" ).each(function( ) {
@@ -50,6 +44,68 @@ function rrefreshtoken() {
     refresh_token = localStorage.getItem("refresh_token")
     spotifyApi.setAccessToken(access_token);
 }
+async function getallpt(uri){
+    let offset = pos;
+    let pagesize = 50;
+    let continueloop = true;
+    var output = []
+    let result = await spotifyApi.getPlaylistTracks(playlistid = uri, options = {limit: pagesize, offset: 0})
+    do {
+        try {
+            for (const i in result.items) {
+                output.push(result.items[i].track.id)
+            }
+            if(result.next!=null) {
+                offset = offset+pagesize;
+                result = await spotifyApi.getPlaylistTracks(playlistid = uri, options = {limit: pagesize, offset: offset})
+            }
+            else {
+                continueloop = false;
+            }
+        }
+        catch(e) {
+            //handle error here...
+            continueloop = false;
+        }
+    }
+    while(continueloop);
+    return output;
+}
+async function getallut(id){
+    let offset = 0;
+    let pagesize = 50;
+    let continueloop = true;
+    var output = []
+    let result = await spotifyApi.getMySavedTracks(options = {limit: pagesize, offset: 0})
+    var go = false
+    do {
+        try {
+            for (const i in result.items) {
+                if (go) {
+                    output.push(result.items[i].track)
+                }
+                if (result.items[i].track.id === id)
+                {
+                    go = true
+                }
+            }
+            if(result.next!=null) {
+                offset = offset+pagesize;
+                result = await spotifyApi.getMySavedTracks(options = {limit: pagesize, offset: offset})
+            }
+            else {
+                continueloop = false;
+            }
+        }
+        catch(e) {
+            //handle error here...
+            continueloop = false;
+        }
+    }
+    while(continueloop);
+    return output;
+}
+setInterval(rrefreshtoken, 1800000);
 window.onSpotifyWebPlaybackSDKReady = async () => {
     const seekBar = document.getElementById("points");
     const name = document.getElementById("name");
@@ -72,9 +128,37 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 
 
     // Ready
-    player.addListener('ready', ({device_id}) => {
+    player.addListener('ready', async ({device_id}) => {
         console.log('Ready with Device ID', device_id);
-        spotifyApi.transferMyPlayback([device_id])
+        await spotifyApi.transferMyPlayback([device_id])
+        if (cqueue !== {} && queue !== [])
+        {
+
+        }
+        let n = await spotifyApi.getMyCurrentPlaybackState()
+        if (n.context) {
+            cqueue = {"type": n.context.type, "uri": n.context.uri}
+            if (n.context.type === "playlist")
+            {
+                queue = await getallpt(n.context.uri.replace("spotify:playlist:", ""))
+            }
+            else if (n.context.type === "collection" && n.context.href === "https://api.spotify.com/v1/me/tracks")
+            {
+                queue = await getallut(n.item.id)
+            }
+        }
+        else {
+            cqueue = {"type": "track", "uri": n.item.uri};
+            let recs = await spotifyApi.getRecommendations(options={"limit": 30, "market": "US", "seed_tracks": n.item.id})
+            let tempq = []
+            for (const i in recs.tracks)
+            {
+                tempq.push(recs.tracks[i])
+            }
+            queue = tempq
+        }
+        localStorage.setItem("cqueue", JSON.stringify(cqueue))
+        localStorage.setItem("queue", JSON.stringify(queue))
     });
 
     // Not Ready
@@ -98,8 +182,8 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
     document.getElementById('togglePlay').onclick = function () {
         player.togglePlay();
     };
-    document.getElementById('skip').onclick = function () {
-        spotifyApi.skipToNext()
+    document.getElementById('skip').onclick = async function () {
+        await spotifyApi.play(options = {"uris": ["spotify:track:" + queue.shift().id]})
     };
     document.getElementById('hearts').onclick = async function () {
 
@@ -117,18 +201,20 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
         }
     };
     document.getElementById('back').onclick = async function () {
-        var x = await spotifyApi.getMyCurrentPlaybackState();
+        //fix with localstorage
+        let x = await spotifyApi.getMyCurrentPlaybackState();
         if (x.progress_ms > 5000) {
             player.seek(0)
         } else {
-            spotifyApi.skipToPrevious()
+            let recent = await spotifyApi.getMyRecentlyPlayedTracks(options={"limit": 1})
+            await spotifyApi.play(options = {"uris": ["spotify:track:" + recent.items[0].track.id]})
         }
 
     };
     const button = document.getElementById("hiii")
 
     var recognizing;
-    var recognition = new webkitSpeechRecognition();
+    const recognition = new webkitSpeechRecognition();
     recognition.continuous = true;
     function reset() {
         recognizing = false;
@@ -138,10 +224,15 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
     recognition.onresult = async function (event) {
         for (var i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
-                let tracks = await spotifyApi.search(q = event.results[i][0].transcript, type = ["track"], limit = 1)
-                console.log(tracks)
-                spotifyApi.play(options = {"uris": ["spotify:track:" + tracks.tracks.items[0].id]})
-
+                let tracks = await spotifyApi.search(q = event.results[i][0].transcript, type = ["track"], limit = 1, callback = function (rej, res) { if (rej){rrefreshtoken(); console.log("failed")}})
+                await spotifyApi.play(options = {"uris": ["spotify:track:" + tracks.tracks.items[0].id]})
+                let recs = await spotifyApi.getRecommendations(options={"limit": 30, "market": "US", "seed_tracks": tracks.tracks.items[0].id})
+                let tempq = []
+                for (const i in recs.tracks)
+                {
+                    tempq.push(recs.tracks[i])
+                }
+                queue = tempq
             }
         }
     }
@@ -161,6 +252,15 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
     let isPlaying = false;
     let lastState = null;
     let lastTimestamp = 0;
+    $('#queue').click(async function () {
+        const f1 = document.getElementById("qeee");
+        f1.innerHTML = "";
+        for (const e in queue) {
+            let d = queue[e]
+            f1.insertAdjacentHTML("beforeend", "<div class=\"group-2-VxPVnb\">\r\n                        <div class=\"rectangle-4-IHYDQL\">\r\n                        <\/div>\r\n                        <img class=\"ab67616d0000b273096a-IHYDQL\" src=\"" + d.album.images[0].url + "\">\r\n                        <h1 class=\"title-IHYDQL\">" + d.name + "<\/h1>\r\n                        <div class=\"album-IHYDQL\">" + d.album.name + "<\/div>\r\n                        <div class=\"artist-IHYDQL\">" + d.artists[0].name + "<\/div>\r\n       <img class=\"trash\" src=\"/img/trash.svg\" onclick='trash(" + d.id + ")'>                <div class=\"x0000-IHYDQL\">" + mtms(d.duration_ms) + "<\/div>\r\n                    <\/div> \r\n <br>");
+        }
+        $('.frame-1').toggleClass("close")
+    });
     player.addListener('player_state_changed', async ({
                                                           position,
                                                           duration,
@@ -212,8 +312,8 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
     });
 
 
-
-    function updateSeekBar() {
+    var nex = true;
+    async function updateSeekBar() {
         const seekBar = document.getElementById('points');
         const t = document.getElementById("time")
         const elapsedTime = Date.now() - lastTimestamp;
@@ -223,12 +323,20 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
             //console.log(position)
             t1.innerText = mtms(position);
             t2.innerText = mtms(dur)
+
         }
         if (parseInt(seekBar.value) > parseInt(seekBar.max)) {
             seekBar.value = lastState;
         }
-        x = (seekBar.value/seekBar.max)* 100
-        $( seekBar ).css( 'background', 'linear-gradient(to right, ' + c1 +' 0%, '+c1+' '+ x +'%, '+c2+' ' + x + '%, '+c2+' 100%)' );
+        x = (seekBar.value / seekBar.max) * 100
+        if (x > 99.7 && nex === true) {
+            nex = false;
+            await spotifyApi.play(options = {"uris": ["spotify:track:" + queue.shift().id]})
+        }
+        else if (x < 99) {
+            nex = true
+        }
+        $(seekBar).css('background', 'linear-gradient(to right, ' + c1 + ' 0%, ' + c1 + ' ' + x + '%, ' + c2 + ' ' + x + '%, ' + c2 + ' 100%)');
         requestAnimationFrame(updateSeekBar);
     }
 
@@ -259,11 +367,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 
 
 }
-function fixtoken() {
-    refreshToken()
-    access_token = localStorage.getItem("access_token")
-    spotifyApi.setAccessToken(access_token);
-}
+
 /* $( 'input[type=range]' ).on( 'input', function( ) {
     x = (this.value/this.max)* 100
     $( this ).css( 'background', 'linear-gradient(to right, #1DB954 0%, #1DB954 '+ x +'%, #fff ' + x + '%, white 100%)' );

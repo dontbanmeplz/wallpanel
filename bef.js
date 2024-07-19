@@ -4,8 +4,7 @@ function mtms(millis) {
     return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
 }
 const client_id = '4f3c759785c549bf9eb5dff8c14ceeb5';
-const redirect_uri = 'http://localhost:8000/auth.html'; // Your redirect uri
-
+const redirect_uri = 'http://localhost:8000/'; // Your redirect uri
 // Restore tokens from localStorage
 let access_token = localStorage.getItem('access_token') || null;
 let refresh_token = localStorage.getItem('refresh_token') || null;

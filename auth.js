@@ -155,31 +155,10 @@ function getUserData() {
             }
         })
         .then((data) => {
-            console.log(data);
         })
         .catch((error) => {
-            console.log(error);
             refreshToken()
-            window
         });
-}
-
-
-
-
-
-function errorTemplate(data) {
-    return `<h2>Error info</h2>
-  <table>
-    <tr>
-        <td>Status</td>
-        <td>${data.status}</td>
-    </tr>
-    <tr>
-        <td>Message</td>
-        <td>${data.message}</td>
-    </tr>
-  </table>`;
 }
 
 // Your client id from your app in the spotify dashboard:
