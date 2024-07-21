@@ -135,7 +135,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		name: "Web Playback SDK Quick Start Player",
 		getOAuthToken: (cb) => {
 			rrefreshtoken();
-			access_token = localStorage.getItem("access_token");1   2
+			access_token = localStorage.getItem("access_token");
 			spotifyApi.setAccessToken(access_token);
 			cb(access_token);
 		},
