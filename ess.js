@@ -281,6 +281,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		}
 	};
 	button.ontouchstart = function (e) {
+		console.log(1)
 		e.target.style.animation = "pulse 2s infinite";
 		recognition.start();
 		recognizing = true;
