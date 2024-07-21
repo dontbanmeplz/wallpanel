@@ -280,20 +280,20 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 			}
 		}
 	};
-	button.ontouchstart = function (e) {
+	button.addEventListener('touchstart',  function (e) {
 		console.log(1)
 		e.target.style.animation = "pulse 2s infinite";
 		recognition.start();
 		recognizing = true;
-	};
-	button.ontouchend = async function (e) {
+	});
+	button.addEventListener('touchend',  async function (e) {
 		e.target.style.animation = "";
 		button.disabled = true;
 		await new Promise((r) => setTimeout(r, 1000));
 		recognition.stop();
 		reset();
 		button.disabled = false;
-	};
+	});
 	let isPlaying = false;
 	let lastState = null;
 	let lastTimestamp = 0;
