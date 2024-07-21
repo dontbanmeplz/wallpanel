@@ -532,4 +532,5 @@ html{height: 100vh; overflow-y: hidden;}
     position: absolute;
     top: 15px;
     width: 25px;
+    height: 25px;
 }
