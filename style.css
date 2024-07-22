@@ -534,3 +534,62 @@ html{height: 100vh; overflow-y: hidden;}
     width: 25px;
     height: 25px;
 }
+.frame-1 .psng {
+    background-color: transparent;
+    color: var(--white);
+    left: 735px;
+    position: absolute;
+    top: 30px;
+    width: 25px;
+    height: 25px;
+}
+:root {
+    --black: #000000;
+    --white: #ffffff;
+
+    --font-size-m: 24px;
+    --font-size-s: 15px;
+    --font-size-xs: 12px;
+    --font-size-xxs: 14px;
+
+    --font-family-inter: "Inter", Helvetica;
+}
+
+.frame-1 .ab67616d0000b273096a-IHYDQL {
+    background-color: transparent;
+    height: 70px;
+    left: 43px;
+    object-fit: cover;
+    position: absolute;
+    top: 10px;
+    width: 70px;
+}
+
+
+.frame-1 .number-IHYDQL {
+    background-color: transparent;
+    color: var(--white);
+    font-family: var(--font-family-inter);
+    font-size: 17;
+    font-style: normal;
+    font-weight: 400;
+    height: auto;
+    left: 145px;
+    letter-spacing: 0.00px;
+    line-height: normal;
+    position: absolute;
+    text-align: left;
+    top: 50px;
+    width: 585px;
+}
+
+
+.frame-1 .play {
+    background-color: transparent;
+    color: var(--white);
+    left: 735px;
+    position: absolute;
+    top: 15px;
+    width: 25px;
+    height: 25px;
+}
