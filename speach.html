@@ -28,6 +28,7 @@
     }
 
     function reset() {
+        console.log(3)
         recognizing = false;
     }
     button.onmousedown = function (e) {
@@ -36,11 +37,10 @@
         console.log(1)
     }
     button.onmouseup = async function (e) {
-        button.disabled = true
+        console.log(2)
         await new Promise(r => setTimeout(r, 1000));
         recognition.stop();
         reset();
-        button.disabled = false
     }
 </script>
 
