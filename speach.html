@@ -13,7 +13,7 @@
     const button = document.getElementById("button")
     const textarea = document.getElementById("textarea")
     var recognizing;
-    var recognition = new SpeechRecognition();
+    var recognition = new webkitSpeechRecognition();
     recognition.continuous = true;
     reset();
     recognition.onend = reset();
