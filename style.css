@@ -534,14 +534,23 @@ html{height: 100vh; overflow-y: hidden;}
     width: 25px;
     height: 25px;
 }
+.frame-1 .qtrash {
+    background-color: transparent;
+    color: var(--white);
+    left: 735px;
+    position: absolute;
+    top: 15px;
+    width: 18px;
+    height: 18px;
+}
 .frame-1 .psng {
     background-color: transparent;
     color: var(--white);
     left: 735px;
     position: absolute;
-    top: 30px;
-    width: 25px;
-    height: 25px;
+    top: 40px;
+    width: 18px;
+    height: 18px;
 }
 :root {
     --black: #000000;

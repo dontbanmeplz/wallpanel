@@ -6,9 +6,10 @@
 </head>
 <body>
 <textarea id="textarea" rows=10 cols=80></textarea>
-<button id="button"></button>
+<button id="button" style="width:50px;height: 30px;">hihihihi</button>
 
 <script type="text/javascript">
+    document.addEventListener('contextmenu', event => event.preventDefault());
     const button = document.getElementById("button")
     const textarea = document.getElementById("textarea")
     var recognizing;

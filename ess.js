@@ -154,6 +154,36 @@ function trash(id) {
 	localStorage.setItem("queue", JSON.stringify(queue));
 	$("#queue").click();
 }
+async function psong(id) {
+	await spotifyApi.play(
+		(options = {uris: ["spotify:track:" + id]}),
+	);
+	let recs = await spotifyApi.getRecommendations(
+		(options = {
+			limit: 30,
+			market: "US",
+			seed_tracks: id,
+		}),
+	);
+	let tempq = [];
+	for (const i in recs.tracks) {
+		tempq.push(recs.tracks[i]);
+	}
+	queue = tempq;
+	cqueue = {type: "track", "uri": "spotify:track:" + id};
+	localStorage.setItem("cqueue", JSON.stringify(cqueue));
+	localStorage.setItem("queue", JSON.stringify(queue));
+	document.getElementById("qeee").className = "frame-1 screen close";
+	document.getElementById("psongs").className = "frame-1 screen close";
+	$(".topblock").each(function () {
+		this.className = "topblock";
+	});
+	document.getElementById("b2").className = "topblock active";
+	$(".bdy").each(function () {
+		this.className = "bdy hide";
+	});
+	document.getElementById("bdy2").className = "bdy";
+}
 async function openp(id) {
 	if (id === "user")
 	{
@@ -176,9 +206,9 @@ async function openp(id) {
 			d.album.name +
 			'</div>\r\n                        <div class="artist-IHYDQL">' +
 			d.artists[0].name +
-			'</div>\r\n       <img class="trash" src="/img/queueicon.svg" onclick="queuesong(\'' +
+			'</div>\r\n       <img class="qtrash" src="/img/queueicon.svg" onclick="queuesong(\'' +
 			d.id +
-			'\')">\r\n  <img class="trash" src="/img/queueicon.svg" onclick="queuesong(\'' +
+			'\')">\r\n  <img class="psng" src="/img/playiconwhite.svg" onclick="psong(\'' +
 			d.id +
 			'\')">               <div class="x0000-IHYDQL">' +
 			mtms(d.duration_ms) +
@@ -445,7 +475,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		{
 			let d = plist[e];
 			f1.insertAdjacentHTML(
-				"beforeend", '<div class="group-2-VxPVnb" onclick="openp(\'' + d.id + '\')">\r\n <div class="rectangle-4-IHYDQL"></div> <img class="ab67616d0000b273096a-IHYDQL" src="' + d.images[0].url + '">\r\n <h1 class="title-IHYDQL">' + d.name + '</h1>\r\n <div class="number-IHYDQL">' + d.tracks.total + ' songs</div>\r\n <img class="play" src="/img/playicon.svg" onclick="pplaylist(\'' + d.id + '\')"> \r\n</div>\r\n                    </div> \r\n <br>'
+				"beforeend", '<div class="group-2-VxPVnb" onclick="openp(\'' + d.id + '\')">\r\n <div class="rectangle-4-IHYDQL"></div> <img class="ab67616d0000b273096a-IHYDQL" src="' + d.images[0].url + '">\r\n <h1 class="title-IHYDQL">' + d.name + '</h1>\r\n <div class="number-IHYDQL">' + d.tracks.total + ' songs</div>\r\n <img class="play" src="/img/playiconwhite.svg" onclick="pplaylist(\'' + d.id + '\')"> \r\n</div>\r\n                    </div> \r\n <br>'
 			);
 		}
 
@@ -601,8 +631,3 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		c1 = "#fff";
 	};
 };
-
-/* $( 'input[type=range]' ).on( 'input', function( ) {
-    x = (this.value/this.max)* 100
-    $( this ).css( 'background', 'linear-gradient(to right, #1DB954 0%, #1DB954 '+ x +'%, #fff ' + x + '%, white 100%)' );
-} ); */
