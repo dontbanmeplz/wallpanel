@@ -6,7 +6,7 @@
 </head>
 <body>
 <textarea id="textarea" rows=10 cols=80></textarea>
-<div id="button" style="width:50px;height: 30px;color:red"></div>
+<div id="button" style="width:50px;height: 30px;background:red"></div>
 
 <script type="text/javascript">
     document.addEventListener('contextmenu', event => event.preventDefault());
@@ -29,12 +29,11 @@
 
     function reset() {
         recognizing = false;
-        button.innerHTML = "Push to Speak";
     }
     button.onmousedown = function (e) {
         recognition.start();
         recognizing = true;
-        button.innerHTML = "Release to Stop";
+        console.log(1)
     }
     button.onmouseup = async function (e) {
         button.disabled = true
