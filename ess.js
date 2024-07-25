@@ -432,6 +432,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		recognizing = true;
 	});
 	button.addEventListener('touchend',  async function (e) {
+		console.log(2)
 		e.target.style.animation = "";
 		button.disabled = true;
 		await new Promise((r) => setTimeout(r, 1000));
