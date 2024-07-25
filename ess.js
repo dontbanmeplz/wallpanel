@@ -389,8 +389,10 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 	reset();
 	recognition.onend = reset();
 	recognition.onresult = async function (event) {
+		console.log(1);
 		for (var i = event.resultIndex; i < event.results.length; ++i) {
 			if (event.results[i].isFinal) {
+				console.log(event.results[i][0].transcript)
 				let tracks = await spotifyApi.search(
 					(q = event.results[i][0].transcript),
 					(type = ["track"]),
