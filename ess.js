@@ -2,6 +2,7 @@ var queue = JSON.parse(localStorage.getItem("queue")) || [];
 var pos = parseInt(localStorage.getItem("pos")) || 0;
 var cqueue = JSON.parse(localStorage.getItem("cqueue")) || {};
 var back = [];
+//var ws = new WebSocket('ws://localhost:8081');
 const swiper = new Swiper(".swiper", {
 	// Optional parameters
 	loop: true,
@@ -423,13 +424,13 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 			}
 		}
 	};
-	button.addEventListener('touchstart',  function (e) {
+	button.addEventListener('touchStart',  function (e) {
 		console.log(1)
 		e.target.style.animation = "pulse 2s infinite";
 		recognition.start();
 		recognizing = true;
 	});
-	button.addEventListener('touchend',  async function (e) {
+	button.addEventListener('touchEnd',  async function (e) {
 		e.target.style.animation = "";
 		button.disabled = true;
 		await new Promise((r) => setTimeout(r, 1000));
