@@ -1,8 +1,20 @@
 var queue = JSON.parse(localStorage.getItem("queue")) || [];
-var pos = parseInt(localStorage.getItem("pos")) || 0;
 var cqueue = JSON.parse(localStorage.getItem("cqueue")) || {};
-var back = [];
-//var ws = new WebSocket('ws://localhost:8081');
+var back = JSON.parse(localStorage.getItem("back")) || [];
+var vol = parseInt(localStorage.getItem("vol")) || 0;
+var ws = new WebSocket("ws://localhost:8081");
+var Sound = (function () {
+	var df = document.createDocumentFragment();
+	return function Sound(src) {
+		var snd = new Audio(src);
+		df.appendChild(snd); // keep in fragment until finished playing
+		snd.addEventListener("ended", function () {
+			df.removeChild(snd);
+		});
+		snd.play();
+		return snd;
+	};
+})();
 const swiper = new Swiper(".swiper", {
 	// Optional parameters
 });
@@ -49,7 +61,7 @@ function rrefreshtoken() {
 	spotifyApi.setAccessToken(access_token);
 }
 async function getallpt(uri) {
-	let offset = pos;
+	let offset = 0;
 	let pagesize = 50;
 	let continueloop = true;
 	var output = [];
@@ -148,16 +160,14 @@ setInterval(rrefreshtoken, 1800000);
 function trash(id) {
 	for (const w in queue) {
 		if (queue[w].id === id) {
-			queue.splice(w,1)
+			queue.splice(w, 1);
 		}
 	}
 	localStorage.setItem("queue", JSON.stringify(queue));
 	$("#queue").click();
 }
 async function psong(id) {
-	await spotifyApi.play(
-		(options = {uris: ["spotify:track:" + id]}),
-	);
+	await spotifyApi.play((options = { uris: ["spotify:track:" + id] }));
 	let recs = await spotifyApi.getRecommendations(
 		(options = {
 			limit: 30,
@@ -170,7 +180,7 @@ async function psong(id) {
 		tempq.push(recs.tracks[i]);
 	}
 	queue = tempq;
-	cqueue = {type: "track", "uri": "spotify:track:" + id};
+	cqueue = { type: "track", uri: "spotify:track:" + id };
 	localStorage.setItem("cqueue", JSON.stringify(cqueue));
 	localStorage.setItem("queue", JSON.stringify(queue));
 	document.getElementById("qeee").className = "frame-1 screen close";
@@ -184,12 +194,25 @@ async function psong(id) {
 	});
 	document.getElementById("bdy2").className = "bdy";
 }
+async function queuesong(id) {
+	let n = await spotifyApi.getTrack(id);
+	queue.unshift(n);
+	localStorage.setItem("queue", JSON.stringify(queue));
+	document.getElementById("qeee").className = "frame-1 screen close";
+	document.getElementById("psongs").className = "frame-1 screen close";
+	$(".topblock").each(function () {
+		this.className = "topblock";
+	});
+	document.getElementById("b2").className = "topblock active";
+	$(".bdy").each(function () {
+		this.className = "bdy hide";
+	});
+	document.getElementById("bdy2").className = "bdy";
+}
 async function openp(id) {
-	if (id === "user")
-	{
+	if (id === "user") {
 		plist = await getallut();
-	}
-	else {
+	} else {
 		plist = await getallpt(id);
 	}
 	let f1 = document.getElementById("psongs");
@@ -199,20 +222,20 @@ async function openp(id) {
 		f1.insertAdjacentHTML(
 			"beforeend",
 			'<div class="group-2-VxPVnb">\r\n                        <div class="rectangle-4-IHYDQL">\r\n                        </div>\r\n                        <img class="ab67616d0000b273096a-IHYDQL" src="' +
-			d.album.images[0].url +
-			'">\r\n                        <h1 class="title-IHYDQL">' +
-			d.name +
-			'</h1>\r\n                        <div class="album-IHYDQL">' +
-			d.album.name +
-			'</div>\r\n                        <div class="artist-IHYDQL">' +
-			d.artists[0].name +
-			'</div>\r\n       <img class="qtrash" src="/img/queueicon.svg" onclick="queuesong(\'' +
-			d.id +
-			'\')">\r\n  <img class="psng" src="/img/playiconwhite.svg" onclick="psong(\'' +
-			d.id +
-			'\')">               <div class="x0000-IHYDQL">' +
-			mtms(d.duration_ms) +
-			"</div>\r\n                    </div> \r\n <br>",
+				d.album.images[0].url +
+				'">\r\n                        <h1 class="title-IHYDQL">' +
+				d.name +
+				'</h1>\r\n                        <div class="album-IHYDQL">' +
+				d.album.name +
+				'</div>\r\n                        <div class="artist-IHYDQL">' +
+				d.artists[0].name +
+				'</div>\r\n       <img class="qtrash" src="/img/queueicon.svg" onclick="queuesong(\'' +
+				d.id +
+				'\')">\r\n  <img class="psng" src="/img/playiconwhite.svg" onclick="psong(\'' +
+				d.id +
+				'\')">               <div class="x0000-IHYDQL">' +
+				mtms(d.duration_ms) +
+				"</div>\r\n                    </div> \r\n <br>",
 		);
 	}
 	$("#psongs").removeClass("close");
@@ -221,11 +244,9 @@ async function pplaylist(id) {
 	if (!e) var e = window.event;
 	e.cancelBubble = true;
 	if (e.stopPropagation) e.stopPropagation();
-	if (id === "user")
-	{
+	if (id === "user") {
 		queue = await getallut();
-	}
-	else {
+	} else {
 		queue = await getallpt(id);
 	}
 	await spotifyApi.play(
@@ -244,7 +265,6 @@ async function pplaylist(id) {
 		this.className = "bdy hide";
 	});
 	document.getElementById("bdy2").className = "bdy";
-
 }
 window.onSpotifyWebPlaybackSDKReady = async () => {
 	const seekBar = document.getElementById("points");
@@ -326,13 +346,15 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		player.togglePlay();
 	};
 	document.getElementById("skip").onclick = async function () {
+		let p = await spotifyApi.getMyCurrentPlaybackState();
+		back.unshift(p.item.id);
+		localStorage.setItem("back", JSON.stringify(back));
 		if (queue.length !== 0) {
 			await spotifyApi.play(
-				(options = {uris: ["spotify:track:" + queue.shift().id]}),
+				(options = { uris: ["spotify:track:" + queue.shift().id] }),
 			);
 			localStorage.setItem("queue", JSON.stringify(queue));
-		}
-		else {
+		} else {
 			let p = await spotifyApi.getMyCurrentPlaybackState();
 			cqueue = { type: "track", uri: p.item.uri };
 			let recs = await spotifyApi.getRecommendations(
@@ -344,7 +366,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 			}
 			queue = tempq;
 			await spotifyApi.play(
-				(options = {uris: ["spotify:track:" + queue.shift().id]}),
+				(options = { uris: ["spotify:track:" + queue.shift().id] }),
 			);
 			localStorage.setItem("cqueue", JSON.stringify(cqueue));
 			localStorage.setItem("queue", JSON.stringify(queue));
@@ -369,10 +391,13 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		if (x.progress_ms > 5000) {
 			player.seek(0);
 		} else {
-			if (back !== []) {
+			if (back.length !== 0) {
 				await spotifyApi.play(
-					(options = { uris: ["spotify:track:" + back[0]] }),
+					(options = { uris: ["spotify:track:" + back.shift()] }),
 				);
+				queue.unshift(x.item);
+				localStorage.setItem("queue", JSON.stringify(queue));
+				localStorage.setItem("back", JSON.stringify(back));
 			} else {
 				player.seek(0);
 			}
@@ -380,21 +405,16 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 	};
 	const button = document.getElementById("hiii");
 
-	var recognizing;
-	const recognition = new webkitSpeechRecognition();
-	recognition.continuous = true;
-	function reset() {
-		recognizing = false;
-	}
-	reset();
-	recognition.onend = reset();
-	recognition.onresult = async function (event) {
-		console.log(1);
-		for (var i = event.resultIndex; i < event.results.length; ++i) {
-			if (event.results[i].isFinal) {
-				console.log(event.results[i][0].transcript)
+	ws.onmessage = async (event) => {
+		const msg = JSON.parse(event.data);
+		let s = true;
+		switch (msg.type) {
+			case "search":
+				s = false;
+				Sound("data:audio/wav;base64," + endsound);
+				button.style.animation = "";
 				let tracks = await spotifyApi.search(
-					(q = event.results[i][0].transcript),
+					(q = msg.text),
 					(type = ["track"]),
 					(limit = 1),
 					(callback = function (rej, res) {
@@ -422,23 +442,73 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 				cqueue = { type: "track", uri: tracks.tracks.items[0].uri };
 				localStorage.setItem("cqueue", JSON.stringify(cqueue));
 				localStorage.setItem("queue", JSON.stringify(queue));
-			}
+				await player.setVolume(vol);
+				break;
+			case "wake":
+				await player.setVolume(0.1)
+				Sound("data:audio/wav;base64," + startsound);
+				s = false;
+				break;
+			case "pause":
+				player.pause();
+				break;
+			case "unpause":
+				player.resume();
+				break;
+			case "cancel":
+				break;
+			case "volume":
+				if (msg.level) {
+					if (msg.level > 10) {
+						await player.setVolume(1);
+						vol = 1
+					}
+					await player.setVolume(msg.level / 10);
+					vol = msg.level / 10
+					break;
+				}
+				if (msg.direction === "up") {
+					if (vol > 0.8) {
+						await player.setVolume(1);
+						vol = 1
+						break;
+					}
+					await player.setVolume((vol + 0.2) / 10);
+					vol = (vol + 0.2) / 10
+				}
+				if (msg.direction === "down") {
+					if (vol < 0.2) {
+						await player.setVolume(0.1);
+						vol = 0.1;
+						break;
+					}
+					await player.setVolume((vol - 0.2) / 10);
+					vol = (vol - 0.2) / 10
+				}
+				if (msg.direction === "mute") {
+					await player.setVolume(0);
+					vol = 0
+				}
+				localStorage.setItem("vol", vol)
+				break;
+			case "next":
+				document.getElementById("skip").click()
+				break;
+			case "previous":
+				document.getElementById("back").click()
+				break;
+		}
+		if (s === true) {
+			Sound("data:audio/wav;base64," + endsound);
+			await player.setVolume(vol);
+			s = false;
 		}
 	};
-	button.addEventListener('touchstart',  function (e) {
-		console.log(1)
+	button.addEventListener("click", function (e) {
+		Sound("data:audio/wav;base64," + startsound);
 		e.target.style.animation = "pulse 2s infinite";
-		recognition.start();
-		recognizing = true;
-	});
-	button.addEventListener('touchend',  async function (e) {
-		console.log(2)
-		e.target.style.animation = "";
-		button.disabled = true;
-		await new Promise((r) => setTimeout(r, 1000));
-		recognition.stop();
-		reset();
-		button.disabled = false;
+		let msg = { type: "listen" };
+		ws.send(JSON.stringify(msg));
 	});
 	let isPlaying = false;
 	let lastState = null;
@@ -472,16 +542,30 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		let f1 = document.getElementById("playlist");
 		f1.innerHTML = "";
 		plist = await getallup();
-		let liked = await getallut()
-		plist.unshift({"id": "user", "images": [{"url": "/img/like.jpg"}], "name": "Liked Songs", "tracks": {"total": liked.length}})
-		for (const e in plist)
-		{
+		let liked = await getallut();
+		plist.unshift({
+			id: "user",
+			images: [{ url: "/img/like.jpg" }],
+			name: "Liked Songs",
+			tracks: { total: liked.length },
+		});
+		for (const e in plist) {
 			let d = plist[e];
 			f1.insertAdjacentHTML(
-				"beforeend", '<div class="group-2-VxPVnb" onclick="openp(\'' + d.id + '\')">\r\n <div class="rectangle-4-IHYDQL"></div> <img class="ab67616d0000b273096a-IHYDQL" src="' + d.images[0].url + '">\r\n <h1 class="title-IHYDQL">' + d.name + '</h1>\r\n <div class="number-IHYDQL">' + d.tracks.total + ' songs</div>\r\n <img class="play" src="/img/playiconwhite.svg" onclick="pplaylist(\'' + d.id + '\')"> \r\n</div>\r\n                    </div> \r\n <br>'
+				"beforeend",
+				'<div class="group-2-VxPVnb" onclick="openp(\'' +
+					d.id +
+					'\')">\r\n <div class="rectangle-4-IHYDQL"></div> <img class="ab67616d0000b273096a-IHYDQL" src="' +
+					d.images[0].url +
+					'">\r\n <h1 class="title-IHYDQL">' +
+					d.name +
+					'</h1>\r\n <div class="number-IHYDQL">' +
+					d.tracks.total +
+					' songs</div>\r\n <img class="play" src="/img/playiconwhite.svg" onclick="pplaylist(\'' +
+					d.id +
+					"')\"> \r\n</div>\r\n                    </div> \r\n <br>",
 			);
 		}
-
 	});
 	player.addListener(
 		"player_state_changed",
@@ -502,9 +586,6 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 			t1.innerText = mtms(position);
 			t2.innerText = mtms(duration);
 			isPlaying = !paused;
-			if (!(current_track.id in back)) {
-				back.unshift(current_track.id);
-			}
 			let f = document.getElementById("togglePlay").getElementsByTagName("img");
 			for (let e of f) {
 				if (e.id === "play" && !paused) {
@@ -552,15 +633,16 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		}
 		x = (seekBar.value / seekBar.max) * 100;
 		if (x > 99.7 && nex === true) {
+			let p = await spotifyApi.getMyCurrentPlaybackState();
+			back.unshift(p.item.id);
+			localStorage.setItem("back", JSON.stringify(back));
 			if (queue.length !== 0) {
 				nex = false;
 				await spotifyApi.play(
-					(options = {uris: ["spotify:track:" + queue.shift().id]}),
+					(options = { uris: ["spotify:track:" + queue.shift().id] }),
 				);
 				localStorage.setItem("queue", JSON.stringify(queue));
-			}
-			else {
-				let p = await spotifyApi.getMyCurrentPlaybackState();
+			} else {
 				cqueue = { type: "track", uri: p.item.uri };
 				let recs = await spotifyApi.getRecommendations(
 					(options = { limit: 30, market: "US", seed_tracks: p.item.id }),
@@ -570,6 +652,8 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 					tempq.push(recs.tracks[i]);
 				}
 				queue = tempq;
+				back = [];
+				localStorage.setItem("back", JSON.stringify(back));
 				localStorage.setItem("cqueue", JSON.stringify(cqueue));
 				localStorage.setItem("queue", JSON.stringify(queue));
 			}
