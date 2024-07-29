@@ -491,6 +491,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 				document.getElementById("skip").click();
 				break;
 			case "previous":
+				await player.seek(6000);
 				document.getElementById("back").click();
 				break;
 		}
