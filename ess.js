@@ -1,7 +1,7 @@
 var queue = JSON.parse(localStorage.getItem("queue")) || [];
 var cqueue = JSON.parse(localStorage.getItem("cqueue")) || {};
 var back = JSON.parse(localStorage.getItem("back")) || [];
-var vol = parseInt(localStorage.getItem("vol")) || 0;
+var vol = parseFloat(localStorage.getItem("vol")) || 0;
 var ws = new WebSocket("ws://localhost:8081");
 var Sound = (function () {
 	var df = document.createDocumentFragment();
@@ -283,14 +283,14 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 			spotifyApi.setAccessToken(access_token);
 			cb(access_token);
 		},
-		volume: 0.5,
+		volume: vol,
 	});
 
 	// Ready
 	player.addListener("ready", async ({ device_id }) => {
 		console.log("Ready with Device ID", device_id);
 		await spotifyApi.transferMyPlayback([device_id]);
-
+		await player.setVolume(vol);
 		if (cqueue !== {} && queue.length !== 0) {
 			//pass
 		} else {
@@ -445,7 +445,9 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 				await player.setVolume(vol);
 				break;
 			case "wake":
-				await player.setVolume(0.1)
+				if (vol > 0) {
+					await player.setVolume(0.1);
+				}
 				Sound("data:audio/wav;base64," + startsound);
 				s = false;
 				break;
@@ -459,43 +461,37 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 				break;
 			case "volume":
 				if (msg.level) {
+					console.log(msg.level);
 					if (msg.level > 10) {
-						await player.setVolume(1);
-						vol = 1
+						vol = 1;
 					}
-					await player.setVolume(msg.level / 10);
-					vol = msg.level / 10
+					vol = msg.level / 10;
 					break;
 				}
 				if (msg.direction === "up") {
 					if (vol > 0.8) {
-						await player.setVolume(1);
-						vol = 1
+						vol = 1;
 						break;
 					}
-					await player.setVolume((vol + 0.2) / 10);
-					vol = (vol + 0.2) / 10
+					vol = vol + 0.2;
 				}
 				if (msg.direction === "down") {
 					if (vol < 0.2) {
-						await player.setVolume(0.1);
 						vol = 0.1;
 						break;
 					}
-					await player.setVolume((vol - 0.2) / 10);
-					vol = (vol - 0.2) / 10
+					vol = vol - 0.2;
 				}
 				if (msg.direction === "mute") {
-					await player.setVolume(0);
-					vol = 0
+					vol = 0;
 				}
-				localStorage.setItem("vol", vol)
+				localStorage.setItem("vol", vol);
 				break;
 			case "next":
-				document.getElementById("skip").click()
+				document.getElementById("skip").click();
 				break;
 			case "previous":
-				document.getElementById("back").click()
+				document.getElementById("back").click();
 				break;
 		}
 		if (s === true) {
