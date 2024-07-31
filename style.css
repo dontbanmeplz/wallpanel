@@ -23,7 +23,7 @@ h2, p {
     background: #121212;
     border: 4px solid #121212;
 }
-.swiper.run{
+#swiper.run{
     animation: spin 6s infinite linear;
     background:
             linear-gradient(
