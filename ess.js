@@ -412,7 +412,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 			case "search":
 				s = false;
 				Sound("data:audio/wav;base64," + endsound);
-				$(".swiper").removeClass("run")
+				$("html").removeClass("run")
 				button.style.animation = "";
 				let tracks = await spotifyApi.search(
 					(q = msg.text),
@@ -446,7 +446,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 				await player.setVolume(vol);
 				break;
 			case "wake":
-				$(".swiper").addClass("run")
+				$("html").addClass("run")
 				if (vol > 0) {
 					await player.setVolume(0.1);
 				}
@@ -454,11 +454,11 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 				s = false;
 				break;
 			case "fail":
-				$(".swiper").removeClass("run")
-				$(".swiper").addClass("fail")
+				$("html").removeClass("run")
+				$("html").addClass("fail")
 				Sound("data:audio/wav;base64," + failsound);
 				setTimeout(() => {
-					$(".swiper").removeClass("fail");
+					$("html").removeClass("fail");
 				}, "800");
 				break;
 			case "pause":
@@ -507,7 +507,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		}
 		if (s === true) {
 			Sound("data:audio/wav;base64," + endsound);
-			$(".swiper").removeClass("run")
+			$("html").removeClass("run")
 			await player.setVolume(vol);
 			s = false;
 		}
