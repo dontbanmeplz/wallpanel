@@ -726,3 +726,58 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		c1 = "#fff";
 	};
 };
+function pad(n, width, z) {
+	z = z || '0';
+	n = n + '';
+	return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
+const nthNumber = (number) => {
+	if (number > 3 && number < 21) return "th";
+	switch (number % 10) {
+		case 1:
+			return "st";
+		case 2:
+			return "nd";
+		case 3:
+			return "rd";
+		default:
+			return "th";
+	}
+};
+const time = document.getElementById("time");
+const dates = document.getElementById("dates")
+const timef = () => {
+	let d = new Date();
+	time.innerText = ((d.getHours() + 24) % 12 || 12) + ":" + pad(d.getMinutes(),2)
+	dates.innerText = d.toLocaleDateString("en-US", { weekday: 'long' }) + " " + d.toLocaleDateString("en-US", { month: 'long'}) + " " + d.getDay() + nthNumber(d.getDay())
+}
+setInterval(timef, 3000);
+timef()
+function upp(str) {
+	return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.substring(1)).join(' ');
+}
+const weatherf = () => {
+	var settings = {
+		"url": "https://api.openweathermap.org/data/3.0/onecall?lat=39.168804&lon=-86.536659&appid=ebdfd7601815c5f915487fa6f88ee74c&units=imperial",
+		"method": "GET",
+		"timeout": 0,
+	};
+
+	$.ajax(settings).done(function (response) {
+		let jsn = response;
+		document.getElementById("ctemp").innerText = parseInt(jsn["current"]["temp"]) + "\u00B0"
+		for(let i = 0; i < 5; i++){
+			let widget = document.getElementById("w" + (i + 1))
+			let w = jsn["hourly"][2*(i+1)]
+			let d = new Date(Date.now() + (7200000 * (i+1)));
+			let ts = d.toLocaleTimeString('en-US', {hour: 'numeric', hour12: true}).toLowerCase().split(" ")
+			widget.getElementsByClassName("x1200-pm")[0].innerText = ts[0] + ":00 " + ts[1] //toLocaleTimeString("en-US", options={hour: "numeric"}) + ":00 " + d.toLocaleTimeString("en-US", options={dayPeriod: "short", hourCycle: "h12"}).toLowerCase()
+			widget.getElementsByClassName("clear-sky")[0].innerText = upp(w["weather"][0]["description"])
+			widget.getElementsByClassName("x102")[0].innerText = parseInt(w["temp"]) + "\u00B0"
+			widget.getElementsByClassName("x01n2x-1")[0].src = "https://openweathermap.org/img/wn/" + w["weather"][0]["icon"].replace("d", "n") + "@2x.png";
+		}
+	});
+	setTimeout(weatherf, 1800000)
+}
+weatherf()
+
