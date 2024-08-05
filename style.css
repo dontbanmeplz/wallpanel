@@ -14,8 +14,8 @@
     overflow: hidden;
     overflow-x: hidden;
     position: relative;
-    top: -8px;
-    left: -8px;
+    top: -4px;
+    left: -4px;
 }
 .topblock.active {
     top: -18px;
@@ -28,8 +28,8 @@ h2, p {
     width: calc(100VW - 8px);
     height: calc(100vh - 8px);
     margin: 0px;
-    left: -8px;
-    top: -8px;
+    left: -4px;
+    top: -4px;
     background: #121212;
 }
 #everything
@@ -677,7 +677,7 @@ html{height: 100vh; overflow-y: hidden;}
 
 .time-BxRcQ9 {
     background-color: transparent;
-    color: var(--white);
+    color: var(--nobel);
     font-family: var(--font-family-inter);
     font-size: var(--font-size-xl);
     font-style: normal;
@@ -714,7 +714,7 @@ html{height: 100vh; overflow-y: hidden;}
 
 .x0-vBN5m0 {
     background-color: transparent;
-    color: var(--white);
+    color: var(--nobel);
     font-family: var(--font-family-inter);
     font-size: var(--font-size-l);
     font-style: normal;
@@ -744,7 +744,7 @@ html{height: 100vh; overflow-y: hidden;}
 
 .date-BxRcQ9 {
     background-color: transparent;
-    color: var(--white);
+    color: var(--nobel);
     font-family: var(--font-family-inter);
     font-size: var(--font-size-mm);
     font-style: normal;
