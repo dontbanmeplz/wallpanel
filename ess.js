@@ -55,10 +55,16 @@ let c1 = "#fff";
 let c2 = "#4D4D4D";
 const spotifyApi = new SpotifyWebApi();
 spotifyApi.setAccessToken(access_token);
+ws.onopen = async (event) => {
+	ws.send(JSON.stringify({"type":"token", "auth": access_token}))
+}
 function rrefreshtoken() {
 	refreshToken();
 	refresh_token = localStorage.getItem("refresh_token");
 	spotifyApi.setAccessToken(access_token);
+	if (ws.readyState !== WebSocket.CLOSED) {
+		ws.send(JSON.stringify({"type": "token", "auth": access_token}))
+	}
 }
 async function getallpt(uri) {
 	let offset = 0;
@@ -165,6 +171,14 @@ function trash(id) {
 	}
 	localStorage.setItem("queue", JSON.stringify(queue));
 	$("#queue").click();
+}
+function ttrash(id) {
+	for (const w in queue) {
+		if (queue[w].id === id) {
+			queue.splice(w, 1);
+		}
+	}
+	localStorage.setItem("queue", JSON.stringify(queue));
 }
 async function psong(id) {
 	await spotifyApi.play((options = { uris: ["spotify:track:" + id] }));
@@ -281,6 +295,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 			rrefreshtoken();
 			access_token = localStorage.getItem("access_token");
 			spotifyApi.setAccessToken(access_token);
+			ws.send(JSON.stringify({"type":"auth", "id": access_token}))
 			cb(access_token);
 		},
 		volume: vol,
@@ -504,6 +519,24 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 				await player.seek(6000);
 				document.getElementById("back").click();
 				break;
+			case "trash":
+				s = false;
+				ttrash(msg.id)
+				break;
+			case "getqueue":
+				s = false;
+				ws.send(JSON.stringify({"type":"squeue", "queue": queue}));
+				break;
+			case "queue":
+				s = false;
+				queue.unshift(n);
+				localStorage.setItem("queue", JSON.stringify(queue));
+				ws.send(JSON.stringify({"type":"squeue", "queue": queue}));
+				break;
+			case "gstate":
+				s = false
+				ws.send(JSON.stringify({"type":"state", "position": positionn, "duration": durationn, "current_track": current_trackn, "paused": pausedn, "auth": access_token}));
+				break;
 		}
 		if (s === true) {
 			Sound("data:audio/wav;base64," + endsound);
@@ -575,9 +608,17 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 			);
 		}
 	});
+	var positionn;
+	var durationn;
+	var current_trackn;
+	var pausedn;
 	player.addListener(
 		"player_state_changed",
 		async ({ position, duration, track_window: { current_track }, paused }) => {
+			position = position
+			duration = duration
+			current_track = current_track
+			paused = paused
 			if (position === null) {
 				position = 0;
 			}
@@ -629,7 +670,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		const seekBar = document.getElementById("points");
 		const t = document.getElementById("time");
 		const elapsedTime = Date.now() - lastTimestamp;
-		let position = lastState + elapsedTime;
+		position = lastState + elapsedTime;
 		if (isPlaying) {
 			seekBar.value = position;
 			//console.log(position)
