@@ -1,4 +1,4 @@
-var ws = new WebSocket("ws://localhost:8081");
+var ws = new WebSocket("ws://ws.sawicz.com");
 const swiper = new Swiper(".swiper", {
     // Optional parameters
 });
