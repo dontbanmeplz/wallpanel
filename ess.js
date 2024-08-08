@@ -62,7 +62,7 @@ function rrefreshtoken() {
 	refreshToken();
 	refresh_token = localStorage.getItem("refresh_token");
 	spotifyApi.setAccessToken(access_token);
-	if (ws.readyState !== WebSocket.CLOSED) {
+	if (ws.readyState !== WebSocket.CONNECTING && ws.readyState !== WebSocket.CLOSED) {
 		ws.send(JSON.stringify({"type": "token", "auth": access_token}))
 	}
 }
@@ -295,7 +295,9 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 			rrefreshtoken();
 			access_token = localStorage.getItem("access_token");
 			spotifyApi.setAccessToken(access_token);
-			ws.send(JSON.stringify({"type":"auth", "id": access_token}))
+			if (ws.readyState !== WebSocket.CONNECTING && ws.readyState !== WebSocket.CLOSED) {
+				ws.send(JSON.stringify({"type": "token", "auth": access_token}))
+			}
 			cb(access_token);
 		},
 		volume: vol,
@@ -423,6 +425,8 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 	ws.onmessage = async (event) => {
 		const msg = JSON.parse(event.data);
 		let s = true;
+		let recs;
+		let tempq;
 		switch (msg.type) {
 			case "search":
 				s = false;
@@ -443,14 +447,14 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 				await spotifyApi.play(
 					(options = { uris: ["spotify:track:" + tracks.tracks.items[0].id] }),
 				);
-				let recs = await spotifyApi.getRecommendations(
+				recs = await spotifyApi.getRecommendations(
 					(options = {
 						limit: 30,
 						market: "US",
 						seed_tracks: tracks.tracks.items[0].id,
 					}),
 				);
-				let tempq = [];
+				tempq = [];
 				for (const i in recs.tracks) {
 					tempq.push(recs.tracks[i]);
 				}
@@ -478,9 +482,11 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 				break;
 			case "pause":
 				player.pause();
+				ws.send(JSON.stringify({"type":"state", "position": positionn, "duration": durationn, "current_track": current_trackn, "paused": pausedn, "auth": access_token}));
 				break;
 			case "unpause":
 				player.resume();
+				ws.send(JSON.stringify({"type":"state", "position": positionn, "duration": durationn, "current_track": current_trackn, "paused": pausedn, "auth": access_token}));
 				break;
 			case "cancel":
 				break;
@@ -522,6 +528,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 			case "trash":
 				s = false;
 				ttrash(msg.id)
+				ws.send(JSON.stringify({"type":"q"}));
 				break;
 			case "getqueue":
 				s = false;
@@ -529,14 +536,63 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 				break;
 			case "queue":
 				s = false;
-				queue.unshift(n);
+				let ss= await spotifyApi.getTrack(msg.id)
+				queue.unshift(ss);
 				localStorage.setItem("queue", JSON.stringify(queue));
 				ws.send(JSON.stringify({"type":"squeue", "queue": queue}));
 				break;
 			case "gstate":
 				s = false
 				ws.send(JSON.stringify({"type":"state", "position": positionn, "duration": durationn, "current_track": current_trackn, "paused": pausedn, "auth": access_token}));
+				let p = await spotifyApi.getMyCurrentPlaybackState();
+				let a = await spotifyApi.containsMySavedTracks([p.item.id]);
+				if (a[0]) {
+					document.getElementById("like").className = "likeicon-1-q2Ud4x";
+					document.getElementById("notlike").className = "likeicon-1-q2Ud4x hide";
+				} else {
+					document.getElementById("like").className = "likeicon-1-q2Ud4x hide";
+					document.getElementById("notlike").className = "likeicon-1-q2Ud4x";
+				}
 				break;
+			case "seek":
+				s = false;
+				if (new Date() - ltime > 200) {
+					player.seek(parseInt(msg.spot)).then(() => {
+						lastTimestamp = Date.now();
+						//console.log(e.target.value)
+						lastState = parseInt(msg.spot);
+					});
+					ltime = new Date();
+				}
+				break;
+			case "psong":
+				s = false;
+				await spotifyApi.play(
+					(options = { uris: ["spotify:track:" + msg.id] }),
+				);
+				recs = await spotifyApi.getRecommendations(
+					(options = {
+						limit: 30,
+						market: "US",
+						seed_tracks: tracks.tracks.items[0].id,
+					}),
+				);
+				tempq = [];
+				for (const i in recs.tracks) {
+					tempq.push(recs.tracks[i]);
+				}
+				queue = tempq;
+				let t = await spotifyApi.getTrack(id)
+				cqueue = { type: "track", uri: t.uri };
+				localStorage.setItem("cqueue", JSON.stringify(cqueue));
+				localStorage.setItem("queue", JSON.stringify(queue));
+				break;
+			case "playp":
+				s = false;
+				await pplaylist(msg.id)
+				break;
+			default:
+				s = false
 		}
 		if (s === true) {
 			Sound("data:audio/wav;base64," + endsound);
@@ -554,6 +610,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 	let isPlaying = false;
 	let lastState = null;
 	let lastTimestamp = 0;
+	var ltime = new Date;
 	$("#queue").click(async function () {
 		let f1 = document.getElementById("qeee");
 		f1.innerHTML = "";
@@ -615,44 +672,44 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 	player.addListener(
 		"player_state_changed",
 		async ({ position, duration, track_window: { current_track }, paused }) => {
-			position = position
-			duration = duration
-			current_track = current_track
-			paused = paused
-			if (position === null) {
-				position = 0;
+			positionn = position
+			durationn = duration
+			current_trackn = current_track
+			pausedn = paused
+			if (positionn === null) {
+				positionn = 0;
 			}
-			lastState = position;
+			lastState = positionn;
 			lastTimestamp = Date.now();
-			if (song !== current_track.name) {
-				song = current_track.name;
-				name.innerText = current_track.name;
-				position = 0;
+			if (song !== current_trackn.name) {
+				song = current_trackn.name;
+				name.innerText = current_trackn.name;
+				positionn = 0;
 			}
-			seekBar.max = duration;
-			dur = duration;
-			seekBar.value = position;
-			t1.innerText = mtms(position);
-			t2.innerText = mtms(duration);
-			isPlaying = !paused;
+			seekBar.max = durationn;
+			dur = durationn;
+			seekBar.value = positionn;
+			t1.innerText = mtms(positionn);
+			t2.innerText = mtms(durationn);
+			isPlaying = !pausedn;
 			let f = document.getElementById("togglePlay").getElementsByTagName("img");
 			for (let e of f) {
-				if (e.id === "play" && !paused) {
+				if (e.id === "play" && !pausedn) {
 					e.className = "playicon-1-bJ8vx4 hide";
-				} else if (e.id === "play" && paused) {
+				} else if (e.id === "play" && pausedn) {
 					e.className = "playicon-1-bJ8vx4";
 				}
-				if (e.id === "pause" && paused) {
+				if (e.id === "pause" && pausedn) {
 					e.className = "playicon-1-bJ8vx4 hide";
-				} else if (e.id === "pause" && !paused) {
+				} else if (e.id === "pause" && !pausedn) {
 					e.className = "playicon-1-bJ8vx4";
 				}
 			}
 			document.getElementById("trackimg").src =
-				current_track.album.images[0].url;
-			document.getElementById("album").innerText = current_track.album.name;
+				current_trackn.album.images[0].url;
+			document.getElementById("album").innerText = current_trackn.album.name;
 			document.getElementById("artist").innerText =
-				current_track.artists[0].name;
+				current_trackn.artists[0].name;
 			let p = await spotifyApi.getMyCurrentPlaybackState();
 			let a = await spotifyApi.containsMySavedTracks([p.item.id]);
 			if (a[0]) {
@@ -662,6 +719,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 				document.getElementById("like").className = "likeicon-1-q2Ud4x hide";
 				document.getElementById("notlike").className = "likeicon-1-q2Ud4x";
 			}
+			ws.send(JSON.stringify({"type":"state", "position": positionn, "duration": durationn, "current_track": current_trackn, "paused": pausedn, "auth": access_token}));
 		},
 	);
 
@@ -670,11 +728,11 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		const seekBar = document.getElementById("points");
 		const t = document.getElementById("time");
 		const elapsedTime = Date.now() - lastTimestamp;
-		position = lastState + elapsedTime;
+		positionn = lastState + elapsedTime;
 		if (isPlaying) {
-			seekBar.value = position;
-			//console.log(position)
-			t1.innerText = mtms(position);
+			seekBar.value = positionn;
+			//console.log(positionn)
+			t1.innerText = mtms(positionn);
 			t2.innerText = mtms(dur);
 		}
 		if (parseInt(seekBar.value) > parseInt(seekBar.max)) {
@@ -731,7 +789,6 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 	requestAnimationFrame(updateSeekBar);
 	player.connect();
 	// green = #1DB954
-	var ltime = new Date();
 	seekBar.oninput = (e) => {
 		x = (e.target.value / e.target.max) * 100;
 		$(e.target).css(

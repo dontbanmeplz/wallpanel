@@ -2,6 +2,11 @@ var ws = new WebSocket("ws://localhost:8081");
 const swiper = new Swiper(".swiper", {
     // Optional parameters
 });
+function mtms(millis) {
+    var minutes = Math.floor(millis / 60000);
+    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+}
 swiper.on("touchStart", (e) => {
     swiper.allowTouchMove = true;
     let x = document.elementFromPoint(e.touches.currentX, e.touches.currentY);
@@ -137,10 +142,10 @@ async function getallup() {
 }
 function trash(id) {
     ws.send(JSON.stringify({"type":"trash", "id": id}))
+    $("#queue").click();
 }
-//FINISH AND TEST QUEUE
 async function psong(id) {
-    ws.send(JSON.stringify({"type":"play", "id": id}))
+    ws.send(JSON.stringify({"type":"psong", "id": id}))
     document.getElementById("qeee").className = "frame-1 screen close";
     document.getElementById("psongs").className = "frame-1 screen close";
     $(".topblock").each(function () {
@@ -153,6 +158,7 @@ async function psong(id) {
     document.getElementById("bdy2").className = "bdy";
 }
 async function queuesong(id) {
+    console.log(id)
     ws.send(JSON.stringify({"type":"queue", "id": id}))
     document.getElementById("qeee").className = "frame-1 screen close";
     document.getElementById("psongs").className = "frame-1 screen close";
@@ -196,6 +202,33 @@ async function openp(id) {
     }
     $("#psongs").removeClass("close");
 }
+$('#sear').on('input',async function (e) {
+    let f1 = document.getElementById("ssn");
+    f1.innerHTML = "";
+    let plist = await spotifyApi.search(q=e.target.value, type=["track"],options={"limit":5})
+    console.log(plist)
+    for (const e in plist.tracks.items) {
+        let d = plist.tracks.items[e];
+        f1.insertAdjacentHTML(
+            "beforeend",
+            '<div class="group-2-VxPVnb">\r\n                        <div class="rectangle-4-IHYDQL">\r\n                        </div>\r\n                        <img class="ab67616d0000b273096a-IHYDQL" src="' +
+            d.album.images[0].url +
+            '">\r\n                        <h1 class="title-IHYDQL">' +
+            d.name +
+            '</h1>\r\n                        <div class="album-IHYDQL">' +
+            d.album.name +
+            '</div>\r\n                        <div class="artist-IHYDQL">' +
+            d.artists[0].name +
+            '</div>\r\n       <img class="qtrash" src="/img/queueicon.svg" onclick="queuesong(\'' +
+            d.id +
+            '\')">\r\n  <img class="psng" src="/img/playiconwhite.svg" onclick="psong(\'' +
+            d.id +
+            '\')">               <div class="x0000-IHYDQL">' +
+            mtms(d.duration_ms) +
+            "</div>\r\n                    </div> \r\n <br>",
+        );
+    }
+});
 async function pplaylist(id) {
     if (!e) var e = window.event;
     e.cancelBubble = true;
@@ -218,14 +251,16 @@ const t1 = document.getElementById("posit");
 const t2 = document.getElementById("durration");
 var song = "";
 var dur = 0;
+var position = 0;
+var duration = 0;
+let isPlaying = false;
+let lastState = null;
+let lastTimestamp = 0;
 ws.onopen = async (event) => {
     ws.send(JSON.stringify({"type":"gtoken"}))
     ws.send(JSON.stringify({"type":"gstate"}))
-    var isPlaying = false;
-    var lastState = null;
-    var lastTimestamp = 0;
     document.getElementById("togglePlay").onclick = function () {
-        if(document.getElementById("play").classList.length > 1){
+        if(document.getElementById("play").classList.length === 1){
             ws.send(JSON.stringify({"type":"play"}))
         }
         else{
@@ -233,13 +268,20 @@ ws.onopen = async (event) => {
         }
     };
     document.getElementById("skip").onclick = async function () {
-        ws.send(JSON.stringify({"type":"skip"}))
+        ws.send(JSON.stringify({"type":"next"}))
     }
     document.getElementById("hearts").onclick = async function () {
-        ws.send(JSON.stringify({"type":"heart"}))
+        let p = await spotifyApi.getMyCurrentPlaybackState();
+        let a = await spotifyApi.containsMySavedTracks([p.item.id]);
+        if (a[0]) {
+            await spotifyApi.removeFromMySavedTracks([p.item.id]);
+        } else {
+            await spotifyApi.addToMySavedTracks([p.item.id]);
+        }
+        ws.send(JSON.stringify({"type":"gstate"}))
     }
     document.getElementById("back").onclick = async function () {
-        ws.send(JSON.stringify({"type":"back"}))
+        ws.send(JSON.stringify({"type":"previous"}))
     }
     $("#queue").click(async function () {
         ws.send(JSON.stringify({"type":"getqueue"}))
@@ -273,21 +315,20 @@ ws.onopen = async (event) => {
             );
         }
     });
+
     async function updateSeekBar() {
-        const seekBar = document.getElementById("points");
         const t = document.getElementById("time");
         const elapsedTime = Date.now() - lastTimestamp;
         let position = lastState + elapsedTime;
         if (isPlaying) {
             seekBar.value = position;
-            //console.log(position)
             t1.innerText = mtms(position);
             t2.innerText = mtms(dur);
         }
         if (parseInt(seekBar.value) > parseInt(seekBar.max)) {
             seekBar.value = lastState;
         }
-        x = (seekBar.value / seekBar.max) * 100;
+        let x = (seekBar.value / seekBar.max) * 100;
 
         $(seekBar).css(
             "background",
@@ -382,6 +423,8 @@ ws.onmessage = async (event) => {
                 position = 0;
             }
             lastState = position;
+            let seekBar = document.getElementById("points")
+            seekBar.value = position;
             lastTimestamp = Date.now();
             if (song !== current_track.name) {
                 song = current_track.name;
