@@ -2,7 +2,8 @@ var queue = JSON.parse(localStorage.getItem("queue")) || [];
 var cqueue = JSON.parse(localStorage.getItem("cqueue")) || {};
 var back = JSON.parse(localStorage.getItem("back")) || [];
 var vol = parseFloat(localStorage.getItem("vol")) || 0;
-var ws = new WebSocket("ws://ws.sawicz.com");
+//var ws = new WebSocket("ws://ws.sawicz.com");
+var ws = new WebSocket("ws://localhost:8081");
 var Sound = (function () {
 	var df = document.createDocumentFragment();
 	return function Sound(src) {
@@ -308,7 +309,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		console.log("Ready with Device ID", device_id);
 		await spotifyApi.transferMyPlayback([device_id]);
 		await player.setVolume(vol);
-		if (cqueue !== {} && queue.length !== 0) {
+		if (cqueue.length !== 0 && queue.length !== 0) {
 			//pass
 		} else {
 			let n = await spotifyApi.getMyCurrentPlaybackState();
