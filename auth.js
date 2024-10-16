@@ -1,4 +1,5 @@
 const client_id = "ce4ca56cf45348c3af1a7368942eda8c";
+const redirect_uri = "https://dash.sawicz.com";
 function generateRandomString(length) {
 	let text = "";
 	const possible =
