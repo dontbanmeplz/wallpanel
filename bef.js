@@ -8,7 +8,7 @@ function mtms(millis) {
 	var seconds = ((millis % 60000) / 1000).toFixed(0);
 	return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
 }
-const redirect_uri = "http://localhost:8000/"; // Your redirect uri
+const redirect_uri = "https://dash.sawicz.com"; // Your redirect uri
 // Restore tokens from localStorage
 var access_token = localStorage.getItem("access_token") || null;
 var refresh_token = localStorage.getItem("refresh_token") || null;
