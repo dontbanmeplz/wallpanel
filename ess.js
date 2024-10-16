@@ -54,7 +54,8 @@ $(".topblock").click(function () {
 
 let c1 = "#fff";
 let c2 = "#4D4D4D";
-const spotifyApi = new SpotifyWebApi();
+const spotifyApi = new SpotifyWebApi();\
+var access_token = localStorage.getItem("access_token") || null;
 spotifyApi.setAccessToken(access_token);
 ws.onopen = async (event) => {
 	ws.send(JSON.stringify({"type":"token", "auth": access_token}))
