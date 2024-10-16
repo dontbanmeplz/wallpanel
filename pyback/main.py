@@ -92,7 +92,7 @@ def message_received(client, ws, message):
         case "playp":
             ws.send_message_to_all(json.dumps({'type':'playp', "id":msg['id']}))
         
-PORT=8081
+PORT=8080
 server = WebsocketServer(port = PORT)
 server.set_fn_message_received(message_received)
     
