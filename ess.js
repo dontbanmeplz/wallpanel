@@ -68,7 +68,7 @@ function rrefreshtoken() {
 	}
 }
 function likea(idd){
-	fetch('https://api.spotify.com/v1/me/tracks?ids=7ouMYWpwJ422jRcDASZB7P%2C4VqPOruhp5EdPBeR92t6lQ%2C2takcwOaAZWiXQijPHIx7B', {
+	fetch('https://api.spotify.com/v1/me/tracks', {
 	  method: 'PUT',
 	  headers: {
 	    'Authorization': 'Bearer '+access_token,
@@ -83,7 +83,7 @@ function likea(idd){
 	});
 }
 function liked(idd){
-	fetch('https://api.spotify.com/v1/me/tracks?ids=7ouMYWpwJ422jRcDASZB7P%2C4VqPOruhp5EdPBeR92t6lQ%2C2takcwOaAZWiXQijPHIx7B', {
+	fetch('https://api.spotify.com/v1/me/tracks', {
 	  method: 'DELETE',
 	  headers: {
 	    'Authorization': 'Bearer '+access_token,
