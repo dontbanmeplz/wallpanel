@@ -2,8 +2,8 @@ var queue = JSON.parse(localStorage.getItem("queue")) || [];
 var cqueue = JSON.parse(localStorage.getItem("cqueue")) || {};
 var back = JSON.parse(localStorage.getItem("back")) || [];
 var vol = parseFloat(localStorage.getItem("vol")) || 0;
-var ws = new WebSocket("wss://ws.sawicz.com");
-//var ws = new WebSocket("ws://localhost:8081");
+//var ws = new WebSocket("wss://ws.sawicz.com");
+var ws = new WebSocket("ws://localhost:8080");
 var Sound = (function () {
 	var df = document.createDocumentFragment();
 	return function Sound(src) {
