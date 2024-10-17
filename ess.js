@@ -67,6 +67,36 @@ function rrefreshtoken() {
 		ws.send(JSON.stringify({"type": "token", "auth": access_token}))
 	}
 }
+function likea(idd){
+	fetch('https://api.spotify.com/v1/me/tracks?ids=7ouMYWpwJ422jRcDASZB7P%2C4VqPOruhp5EdPBeR92t6lQ%2C2takcwOaAZWiXQijPHIx7B', {
+	  method: 'PUT',
+	  headers: {
+	    'Authorization': 'Bearer '+access_token,
+	    'Content-Type': 'application/json'
+	  },
+	  // body: '{\n    "ids": [\n        "string"\n    ]\n}',
+	  body: JSON.stringify({
+	    'ids': [
+	      idd
+	    ]
+	  })
+	});
+}
+function liked(idd){
+	fetch('https://api.spotify.com/v1/me/tracks?ids=7ouMYWpwJ422jRcDASZB7P%2C4VqPOruhp5EdPBeR92t6lQ%2C2takcwOaAZWiXQijPHIx7B', {
+	  method: 'DELETE',
+	  headers: {
+	    'Authorization': 'Bearer '+access_token,
+	    'Content-Type': 'application/json'
+	  },
+	  // body: '{\n    "ids": [\n        "string"\n    ]\n}',
+	  body: JSON.stringify({
+	    'ids': [
+	      idd
+	    ]
+	  })
+	});
+}
 async function getallpt(uri) {
 	let offset = 0;
 	let pagesize = 50;
@@ -396,11 +426,11 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		console.log(p.item.id);
 		console.log(a);
 		if (a[0]) {
-			await spotifyApi.removeFromMySavedTracks([p.item.id]);
+			liked(p.item.id);
 			document.getElementById("like").className = "likeicon-1-q2Ud4x hide";
 			document.getElementById("notlike").className = "likeicon-1-q2Ud4x";
 		} else {
-			await spotifyApi.addToMySavedTracks([p.item.id]);
+			likea(p.item.id);
 			document.getElementById("like").className = "likeicon-1-q2Ud4x";
 			document.getElementById("notlike").className = "likeicon-1-q2Ud4x hide";
 		}
