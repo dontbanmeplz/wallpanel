@@ -393,6 +393,8 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 	document.getElementById("hearts").onclick = async function () {
 		let p = await spotifyApi.getMyCurrentPlaybackState();
 		let a = await spotifyApi.containsMySavedTracks([p.item.id]);
+		console.log(p.item.id);
+		console.log(a);
 		if (a[0]) {
 			await spotifyApi.removeFromMySavedTracks([p.item.id]);
 			document.getElementById("like").className = "likeicon-1-q2Ud4x hide";
@@ -402,7 +404,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 			document.getElementById("like").className = "likeicon-1-q2Ud4x";
 			document.getElementById("notlike").className = "likeicon-1-q2Ud4x hide";
 		}
-		console.log(p.item.id);
+		
 	};
 	document.getElementById("back").onclick = async function () {
 		//fix with localstorage
