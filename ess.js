@@ -402,6 +402,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 			document.getElementById("like").className = "likeicon-1-q2Ud4x";
 			document.getElementById("notlike").className = "likeicon-1-q2Ud4x hide";
 		}
+		console.log(p.item.id);
 	};
 	document.getElementById("back").onclick = async function () {
 		//fix with localstorage
