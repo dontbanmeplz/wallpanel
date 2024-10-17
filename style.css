@@ -14,8 +14,8 @@
     overflow: hidden;
     overflow-x: hidden;
     position: relative;
-    top: -4px;
-    left: -4px;
+    top: -2px;
+    left: -2px;
 }
 .topblock.active {
     top: -18px;
