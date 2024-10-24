@@ -46,51 +46,51 @@ def message_received(client, ws, message):
     msg = json.loads(message)
     typ = msg['type']
     global auth
-    match typ:
-        case 'listen':
-            ws.send_message_to_all(json.dumps({'type':'wake'}))
-            with mic as source:
-                try:
-                    audio = r.listen(source, timeout=3, phrase_time_limit=7)
-                except sr.WaitTimeoutError:
-                        print("timeout")
-                        ws.send_message_to_all(json.dumps({'type':'fail'}))
-                        return
-                text = detect(audio)
-            ws.send_message(client, json.dumps({'type':'search','text':text}))
-        case "trash":
-            ws.send_message_to_all(json.dumps({'type':'trash', "id":msg['id']}))
-        case "getqueue":
-            ws.send_message_to_all(json.dumps({'type':'getqueue'}))
-        case "queue":
-            ws.send_message_to_all(json.dumps({'type':'queue', "id":msg['id']}))
-        case "squeue":
-            ws.send_message_to_all(json.dumps({'type':'sendqueue', "queue":msg['queue']}))
-        case "gstate":
-            ws.send_message_to_all(json.dumps({'type':'gstate'}))
-        case "state":
-            ws.send_message_to_all(json.dumps({'type':'state', "position":msg['position'], "duration":msg['duration'], "current_track":msg['current_track'], "paused":msg['paused'], "auth":msg['auth']}))
-        case "token":
-            auth = msg['auth']
-            ws.send_message_to_all(json.dumps({'type':'stoken', "auth":msg['auth']}))
-        case "gtoken":
-            ws.send_message_to_all(json.dumps({'type':'stoken', "auth":auth}))
-        case "q":
-            ws.send_message_to_all(json.dumps({'type':'q'}))
-        case "seek":
-            ws.send_message_to_all(json.dumps({'type':'seek', "spot":msg['spot']}))
-        case "play":
-            ws.send_message_to_all(json.dumps({'type':'unpause'}))
-        case "pause":
-            ws.send_message_to_all(json.dumps({'type':'pause'}))
-        case "next":
-            ws.send_message_to_all(json.dumps({'type':'next'}))
-        case "previous":
-            ws.send_message_to_all(json.dumps({'type':'previous'}))
-        case "psong":
-            ws.send_message_to_all(json.dumps({'type':'psong', "id":msg['id']}))
-        case "playp":
-            ws.send_message_to_all(json.dumps({'type':'playp', "id":msg['id']}))
+    
+    if typ == 'listen':
+        ws.send_message_to_all(json.dumps({'type':'wake'}))
+        with mic as source:
+            try:
+                audio = r.listen(source, timeout=3, phrase_time_limit=7)
+            except sr.WaitTimeoutError:
+                    print("timeout")
+                    ws.send_message_to_all(json.dumps({'type':'fail'}))
+                    return
+            text = detect(audio)
+        ws.send_message(client, json.dumps({'type':'search','text':text}))
+    elif typ == "trash":
+        ws.send_message_to_all(json.dumps({'type':'trash', "id":msg['id']}))
+    elif typ == "getqueue":
+        ws.send_message_to_all(json.dumps({'type':'getqueue'}))
+    elif typ == "queue":
+        ws.send_message_to_all(json.dumps({'type':'queue', "id":msg['id']}))
+    elif typ == "squeue":
+        ws.send_message_to_all(json.dumps({'type':'sendqueue', "queue":msg['queue']}))
+    elif typ == "gstate":
+        ws.send_message_to_all(json.dumps({'type':'gstate'}))
+    elif typ == "state":
+        ws.send_message_to_all(json.dumps({'type':'state', "position":msg['position'], "duration":msg['duration'], "current_track":msg['current_track'], "paused":msg['paused'], "auth":msg['auth']}))
+    elif typ == "token":
+        auth = msg['auth']
+        ws.send_message_to_all(json.dumps({'type':'stoken', "auth":msg['auth']}))
+    elif typ == "gtoken":
+        ws.send_message_to_all(json.dumps({'type':'stoken', "auth":auth}))
+    elif typ == "q":
+        ws.send_message_to_all(json.dumps({'type':'q'}))
+    elif typ == "seek":
+        ws.send_message_to_all(json.dumps({'type':'seek', "spot":msg['spot']}))
+    elif typ == "play":
+        ws.send_message_to_all(json.dumps({'type':'unpause'}))
+    elif typ == "pause":
+        ws.send_message_to_all(json.dumps({'type':'pause'}))
+    elif typ == "next":
+        ws.send_message_to_all(json.dumps({'type':'next'}))
+    elif typ == "previous":
+        ws.send_message_to_all(json.dumps({'type':'previous'}))
+    elif typ == "psong":
+        ws.send_message_to_all(json.dumps({'type':'psong', "id":msg['id']}))
+    elif typ == "playp":
+        ws.send_message_to_all(json.dumps({'type':'playp', "id":msg['id']}))
         
 PORT=8080
 server = WebsocketServer(port = PORT)
@@ -120,61 +120,62 @@ if __name__ == "__main__":
                     text = detect(audio)
                     print(text)
                 tl = text.split(" ")
-                match tl[0].lower():
-                    case "play":
-                        text = text.split(" ")[1:]
-                        if text == []:
-                            server.send_message_to_all(json.dumps({'type':'unpause'}))
-                        else:
-                            server.send_message_to_all(json.dumps({'type':'search','text':text}))
-                    case "pause" | "stop":
-                        server.send_message_to_all(json.dumps({'type':'pause'}))
-                    case "unpause" | "resume" | "go":
+                tt = tl[0].lower()
+
+                if tt == "play":
+                    text = text.split(" ")[1:]
+                    if text == []:
                         server.send_message_to_all(json.dumps({'type':'unpause'}))
-                    case "nevermind" | "cancel":
-                        server.send_message_to_all(json.dumps({'type':'cancel'}))
-                    case "lower" | "quieter":
-                        server.send_message_to_all(json.dumps({'type':'volume','direction':'down'}))
-                    case "raise" | "louder":
-                        server.send_message_to_all(json.dumps({'type':'volume','direction':'up'}))
-                    case "volume":
-                        try:
-                            if tl[1].lower() == "down":
+                    else:
+                        server.send_message_to_all(json.dumps({'type':'search','text':text}))
+                elif tt == "pause" or tt == "stop":
+                    server.send_message_to_all(json.dumps({'type':'pause'}))
+                elif tt == "unpause" or tt == "resume" or tt == "go":
+                    server.send_message_to_all(json.dumps({'type':'unpause'}))
+                elif tt == "nevermind" or tt == "cancel":
+                    server.send_message_to_all(json.dumps({'type':'cancel'}))
+                elif tt == "lower" or tt == "quieter":
+                    server.send_message_to_all(json.dumps({'type':'volume','direction':'down'}))
+                elif tt == "raise" or tt == "louder":
+                    server.send_message_to_all(json.dumps({'type':'volume','direction':'up'}))
+                elif tt == "volume":
+                    try:
+                        if tl[1].lower() == "down":
+                            server.send_message_to_all(json.dumps({'type':'volume','direction':'down'}))
+                        elif tl[1].lower() == "up":
+                            server.send_message_to_all(json.dumps({'type':'volume','direction':'up'}))
+                        elif tl[1].lower() == "to":
+                            if tl[2].isdigit() or c2n(tl[2].lower()).isdigit():
+                                server.send_message_to_all(json.dumps({'type':'volume','level':c2n(tl[2])}))
+                        else:
+                            if tl[1].isdigit() or c2n(tl[2].lower()).isdigit():
+                                server.send_message_to_all(json.dumps({'type':'volume','level':c2n(tl[1])}))
+                    except:
+                        pass
+                elif tt == "set":
+                    try:
+                        if tl[1].lower() == "volume":
+                            if tl[2].isdigit() or c2n(tl[2].lower()).isdigit():
+                                server.send_message_to_all(json.dumps({'type':'volume','level':c2n(tl[2])}))
+                            elif tl[2].lower() == "to":
+                                if tl[3].isdigit() or c2n(tl[2].lower()).isdigit():
+                                    server.send_message_to_all(json.dumps({'type':'volume','level':c2n(tl[3])}))
+                            elif tl[2].lower() == "down":
                                 server.send_message_to_all(json.dumps({'type':'volume','direction':'down'}))
-                            elif tl[1].lower() == "up":
+                            elif tl[2].lower() == "up":
                                 server.send_message_to_all(json.dumps({'type':'volume','direction':'up'}))
-                            elif tl[1].lower() == "to":
-                                if tl[2].isdigit() or c2n(tl[2].lower()).isdigit():
-                                    server.send_message_to_all(json.dumps({'type':'volume','level':c2n(tl[2])}))
-                            else:
-                                if tl[1].isdigit() or c2n(tl[2].lower()).isdigit():
-                                    server.send_message_to_all(json.dumps({'type':'volume','level':c2n(tl[1])}))
-                        except:
-                            pass
-                    case "set":
-                        try:
-                            if tl[1].lower() == "volume":
-                                if tl[2].isdigit() or c2n(tl[2].lower()).isdigit():
-                                    server.send_message_to_all(json.dumps({'type':'volume','level':c2n(tl[2])}))
-                                elif tl[2].lower() == "to":
-                                    if tl[3].isdigit() or c2n(tl[2].lower()).isdigit():
-                                        server.send_message_to_all(json.dumps({'type':'volume','level':c2n(tl[3])}))
-                                elif tl[2].lower() == "down":
-                                    server.send_message_to_all(json.dumps({'type':'volume','direction':'down'}))
-                                elif tl[2].lower() == "up":
-                                    server.send_message_to_all(json.dumps({'type':'volume','direction':'up'}))
-                        except:
-                            pass
-                    case "mute":
-                        server.send_message_to_all(json.dumps({'type':'volume','direction':'mute'}))
-                    case "next" | "skip":
-                        server.send_message_to_all(json.dumps({'type':'next'}))
-                    case "previous" | "back":
-                        server.send_message_to_all(json.dumps({'type':'previous'}))
-                    case "bruh":
-                        server.send_message_to_all(json.dumps({'type':'fail'}))
-                    case _:
-                        server.send_message_to_all(json.dumps({'type':'fail'}))
+                    except:
+                        pass
+                elif tt == "mute":
+                    server.send_message_to_all(json.dumps({'type':'volume','direction':'mute'}))
+                elif tt == "next" or tt == "skip":
+                    server.send_message_to_all(json.dumps({'type':'next'}))
+                elif tt == "previous" or tt == "back":
+                    server.send_message_to_all(json.dumps({'type':'previous'}))
+                elif tt == "bruh":
+                    server.send_message_to_all(json.dumps({'type':'fail'}))
+                else:
+                    server.send_message_to_all(json.dumps({'type':'fail'}))
     except KeyboardInterrupt:
         print('Stopping ...')
     except Exception as e:
