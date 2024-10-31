@@ -5,7 +5,7 @@ import json
 import pvporcupine
 from pvrecorder import PvRecorder
 import re
- 
+import json 
 def c2n(s):
    
     words_to_numbers = {
@@ -39,7 +39,9 @@ recorder = PvRecorder(
 recorder.start()
 def detect(audio):
     try:
-        return r.recognize_google(audio)
+        text = r.recognize_vosk(audio)
+        text = json.loads(text)["text"]
+        return text
     except sr.UnknownValueError:
         return "Bruh idk"
 def message_received(client, ws, message):
@@ -118,6 +120,7 @@ if __name__ == "__main__":
                         continue
                     print("go")
                     text = detect(audio)
+                    print(type(text))
                     print(text)
                 tl = text.split(" ")
                 tt = tl[0].lower()
