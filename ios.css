@@ -26,7 +26,7 @@
     font-style: normal;
     font-weight: 400;
     height: auto;
-    left: -53vw;
+    left: 0vw;
     letter-spacing: 0.00px;
     line-height: normal;
     position: absolute;
@@ -165,4 +165,37 @@
     position: relative;
     width: 100vw;
     overflow-y: auto;
+}
+.now-playing .nexticon-1-q2Ud4x {
+    background-color: transparent;
+    height: 30px;
+    left: 70vw;
+    position: absolute;
+    top: 60vh;
+    width: 30px;
+}
+.searchbutton {
+    background-color: #121212;
+    height: 100vh;
+    overflow: hidden;
+    overflow-x: hidden;
+    position: relative;
+    width: 100vw;
+}
+.searchbutton .microphone-342-1-ab07IB {
+    background-color: transparent;
+    height: 86px;
+    left: 40vw;
+    position: absolute;
+    top: 25vh;
+    width: 86px;
+    transform: scale(1);
+}
+.searchbutton .ellipse-2-ab07IB {
+    background-color: transparent;
+    height: 182px;
+    left: 27.5vw;
+    position: absolute;
+    top: 19.5vh;
+    width: 182px;
 }

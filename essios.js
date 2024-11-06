@@ -1,4 +1,3 @@
-var ws = new WebSocket("wss://ws.sawicz.com");
 const swiper = new Swiper(".swiper", {
     // Optional parameters
 });
@@ -256,6 +255,8 @@ var duration = 0;
 let isPlaying = false;
 let lastState = null;
 let lastTimestamp = 0;
+function connect() {
+var ws = new WebSocket("wss://ws.sawicz.com");
 ws.onopen = async (event) => {
     ws.send(JSON.stringify({"type":"gtoken"}))
     ws.send(JSON.stringify({"type":"gstate"}))
@@ -386,6 +387,21 @@ ws.onopen = async (event) => {
     };
 
 }
+return ws;
+}
+const button = document.getElementById("hiii");
+button.addEventListener("click", function (e) {
+    let msg = { type: "listen" };
+    ws.send(JSON.stringify(msg));
+});
+var ws = connect();
+ws.onclose = function(e) {
+    console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+    setTimeout(function() {
+        ws = connect();
+    }, 1000);
+  };    
+
 ws.onmessage = async (event) => {
     const msg = JSON.parse(event.data);
     switch (msg.type) {
@@ -416,6 +432,7 @@ ws.onmessage = async (event) => {
         case "state":
             spotifyApi.setAccessToken(msg.auth);
             let position = msg.position;
+            console.log(position)
             let duration = msg.duration;
             let current_track = msg.current_track;
             let paused = msg.paused;

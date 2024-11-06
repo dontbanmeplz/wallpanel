@@ -577,6 +577,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 				break;
 			case "gstate":
 				s = false
+				positionn = (t1.innerText.split(":").map(Number)[0] * 60 * 1000) + (t1.innerText.split(":").map(Number)[1] * 1000)
 				ws.send(JSON.stringify({"type":"state", "position": positionn, "duration": durationn, "current_track": current_trackn, "paused": pausedn, "auth": access_token}));
 				let p = await spotifyApi.getMyCurrentPlaybackState();
 				let a = await spotifyApi.containsMySavedTracks([p.item.id]);
