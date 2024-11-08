@@ -934,6 +934,7 @@ timer = setTimeout(() => {
 }, 5000);
 }
 
-// Add an event listener to handle clicks
-document.addEventListener('click', addClass);
+// Add an event listener to handle clicks\
+let all = document.getElementById("everything");
+all.addEventListener('click', addClass);
 addClass()
