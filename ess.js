@@ -463,6 +463,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 		let tempq;
 		switch (msg.type) {
 			case "search":
+				addClass()
 				s = false;
 				Sound("data:audio/wav;base64," + endsound);
 				$("html").removeClass("run")
@@ -505,6 +506,7 @@ window.onSpotifyWebPlaybackSDKReady = async () => {
 				}
 				Sound("data:audio/wav;base64," + startsound);
 				s = false;
+				addClass()
 				break;
 			case "fail":
 				$("html").removeClass("run")
@@ -931,7 +933,7 @@ if (timer) {
 // Start a new timer to remove the class after the timeout
 timer = setTimeout(() => {
 	el.classList.remove("hide");
-}, 5000);
+}, 300000);
 }
 
 // Add an event listener to handle clicks\

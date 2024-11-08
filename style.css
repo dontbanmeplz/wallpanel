@@ -8,14 +8,12 @@
     display: none;
 }
 .screensaver{
-    width: calc(100VW - 8px);
-    height: calc(100vh - 8px);
+    width: 100vw;
+    height: 100vh;
     background-color: #121212;
     overflow: hidden;
     overflow-x: hidden;
     position: relative;
-    top: -8px;
-    left: -8px;
 }
 .topblock.active {
     top: -18px;
