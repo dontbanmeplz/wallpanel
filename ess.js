@@ -915,12 +915,12 @@ const weatherf = () => {
 weatherf()
 
 let timer;
-
+let el = document.getElementsByClassName("screensaver")[0];
 // Function to add the class and start the timer
 function addClass() {
 // Add the class if it's not already there
-if (!element.classList.contains("hide")) {
-	element.classList.add("hide");
+if (!el.classList.contains("hide")) {
+	el.classList.add("hide");
 }
 
 // Clear any existing timer
@@ -930,9 +930,10 @@ if (timer) {
 
 // Start a new timer to remove the class after the timeout
 timer = setTimeout(() => {
-	element.classList.remove("hide");
+	el.classList.remove("hide");
 }, 5000);
 }
+
 // Add an event listener to handle clicks
 document.addEventListener('click', addClass);
 addClass()
