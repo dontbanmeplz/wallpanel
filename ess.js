@@ -914,3 +914,25 @@ const weatherf = () => {
 }
 weatherf()
 
+let timer;
+
+// Function to add the class and start the timer
+function addClass() {
+// Add the class if it's not already there
+if (!element.classList.contains("hide")) {
+	element.classList.add("hide");
+}
+
+// Clear any existing timer
+if (timer) {
+	clearTimeout(timer);
+}
+
+// Start a new timer to remove the class after the timeout
+timer = setTimeout(() => {
+	element.classList.remove("hide");
+}, 5000);
+}
+// Add an event listener to handle clicks
+document.addEventListener('click', addClass);
+addClass()
