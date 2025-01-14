@@ -1523,11 +1523,12 @@ var SpotifyWebApi = (function () {
 	 * one is the error object (null if no error), and the second is the value if the request succeeded.
 	 * @return {Object} Null if a callback is provided, a `Promise` object otherwise
 	 */
-	Constr.prototype.getRecommendations = function (options, callback) {
-		var requestData = {
-			url: _baseUri + "/recommendations",
-		}
-		return _checkParamsAndPerformRequest(requestData, options, callback)
+	Constr.prototype.getRecommendations = async function (options, callback) {
+		
+		let response = await fetch('https://soundlens.pro/api/spotify-replacement/recommendations?seed_tracks=' + options["seed_tracks"] + "&limit=" + options["limit"]);
+		let jsonResponse = await response.json();
+		return jsonResponse
+		
 	}
 
 	/**

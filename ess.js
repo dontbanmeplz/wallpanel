@@ -215,7 +215,6 @@ async function psong(id) {
 	let recs = await spotifyApi.getRecommendations(
 		(options = {
 			limit: 30,
-			market: "US",
 			seed_tracks: id,
 		}),
 	)
@@ -370,7 +369,7 @@ window.onload = async () => {
 		} else {
 			cqueue = { type: "track", uri: n.item.uri }
 			let recs = await spotifyApi.getRecommendations(
-				(options = { limit: 30, market: "US", seed_tracks: n.item.id }),
+				(options = { limit: 30, seed_tracks: n.item.id }),
 			)
 			let tempq = []
 			for (const i in recs.tracks) {
@@ -406,7 +405,7 @@ window.onload = async () => {
 			let p = await spotifyApi.getMyCurrentPlaybackState()
 			cqueue = { type: "track", uri: p.item.uri }
 			let recs = await spotifyApi.getRecommendations(
-				(options = { limit: 30, market: "US", seed_tracks: p.item.id }),
+				(options = { limit: 30, seed_tracks: p.item.id }),
 			)
 			let tempq = []
 			for (const i in recs.tracks) {
@@ -487,7 +486,6 @@ window.onload = async () => {
 				recs = await spotifyApi.getRecommendations(
 					(options = {
 						limit: 30,
-						market: "US",
 						seed_tracks: tracks.tracks.items[0].id,
 					}),
 				)
@@ -638,7 +636,6 @@ window.onload = async () => {
 				recs = await spotifyApi.getRecommendations(
 					(options = {
 						limit: 30,
-						market: "US",
 						seed_tracks: tracks.tracks.items[0].id,
 					}),
 				)
@@ -827,7 +824,7 @@ window.onload = async () => {
 			} else {
 				cqueue = { type: "track", uri: p.item.uri }
 				let recs = await spotifyApi.getRecommendations(
-					(options = { limit: 30, market: "US", seed_tracks: p.item.id }),
+					(options = { limit: 30, seed_tracks: p.item.id }),
 				)
 				let tempq = []
 				for (const i in recs.tracks) {
