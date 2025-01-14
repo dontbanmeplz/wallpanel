@@ -325,6 +325,7 @@ window.onload = async () => {
 		ws.readyState !== WebSocket.CONNECTING &&
 		ws.readyState !== WebSocket.CLOSED
 	) {}
+	console.log("ws connected")
 	rrefreshtoken()
 	access_token = localStorage.getItem("access_token")
 	spotifyApi.setAccessToken(access_token)
@@ -349,6 +350,7 @@ window.onload = async () => {
 		await new Promise((r) => setTimeout(r, 2000))
 	}
 	await spotifyApi.transferMyPlayback([devid])
+	console.log("Device found")
 	if (cqueue.length !== 0 && queue.length !== 0) {
 		//pass
 	} else {
