@@ -1,35 +1,34 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
-</head>
-<body>
-<button class="talk">Talk</button>
-<h3 class="content"></h3>
-<script>
-    const btn = document.querySelector(".talk");
-    const content = document.querySelector(".content");
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Document</title>
+	</head>
+	<body>
+		<button class="talk">Talk</button>
+		<h3 class="content"></h3>
+		<script>
+			const btn = document.querySelector(".talk")
+			const content = document.querySelector(".content")
 
-    const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
-    const myRecognition = new SpeechRecognition();
-    myRecognition.onstart = function() {
-        console.log("voice is activated, you may now speak");
-    };
+			const SpeechRecognition =
+				window.SpeechRecognition || window.webkitSpeechRecognition
+			const myRecognition = new SpeechRecognition()
+			myRecognition.onstart = function () {
+				console.log("voice is activated, you may now speak")
+			}
 
-    myRecognition.onresult = function(event) {
-        console.log(event);
-    };
+			myRecognition.onresult = function (event) {
+				console.log(event)
+			}
 
-    //adding eventListener
+			//adding eventListener
 
-    btn.addEventListener("click", () => {
-        myRecognition.start();
-    });
-
-</script>
-</body>
+			btn.addEventListener("click", () => {
+				myRecognition.start()
+			})
+		</script>
+	</body>
 </html>

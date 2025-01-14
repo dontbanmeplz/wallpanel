@@ -1,96 +1,107 @@
 <html>
-<head>
-    <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-    />
-    <style>
-        .swiper {
-            width: 100%;
-            height: 100%;
-        }
+	<head>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+		/>
+		<style>
+			.swiper {
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+		<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+		<style>
+			.slidecontainer {
+				width: 100%;
+			}
 
-    <style>
-        .slidecontainer {
-            width: 100%;
-        }
+			.slider {
+				-webkit-appearance: none;
+				width: 90%;
+				height: 25px;
+				background: #d3d3d3;
+				outline: none;
+				display: block;
+				margin-left: auto;
+				margin-right: auto;
+				opacity: 0.7;
+				-webkit-transition: 0.2s;
+				transition: opacity 0.2s;
+			}
 
-        .slider {
-            -webkit-appearance: none;
-            width: 90%;
-            height: 25px;
-            background: #d3d3d3;
-            outline: none;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            opacity: 0.7;
-            -webkit-transition: .2s;
-            transition: opacity .2s;
-        }
+			.slider:hover {
+				opacity: 1;
+			}
 
-        .slider:hover {
-            opacity: 1;
-        }
+			.slider::-webkit-slider-thumb {
+				-webkit-appearance: none;
+				appearance: none;
+				width: 25px;
+				height: 25px;
+				background: #04aa6d;
+				cursor: pointer;
+			}
 
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 25px;
-            height: 25px;
-            background: #04AA6D;
-            cursor: pointer;
-        }
+			.slider::-moz-range-thumb {
+				width: 25px;
+				height: 25px;
+				background: #04aa6d;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Slider main container -->
+		<div class="swiper">
+			<!-- Additional required wrapper -->
+			<div class="swiper-wrapper" id="hhh">
+				<!-- Slides -->
+				<div class="swiper-slide">
+					<div class="slidecontainer">
+						<input
+							type="range"
+							min="1"
+							max="100"
+							value="50"
+							class="slider"
+							id="myRange"
+						/>
+						<p>Value: <span id="demo"></span></p>
+					</div>
+				</div>
+				<div class="swiper-slide">Slide 2</div>
+				<div class="swiper-slide">Slide 3</div>
+			</div>
+		</div>
+		<script>
+			const swiper = new Swiper(".swiper", {
+				// Optional parameters
+				loop: true,
+			})
+			swiper.on("touchStart", (e) => {
+				swiper.allowTouchMove = true
+				let x = document.elementFromPoint(
+					e.touches.currentX,
+					e.touches.currentY,
+				)
+				if (x.className !== "swiper-slide swiper-slide-active") {
+					swiper.allowTouchMove = false
+				}
+			})
+		</script>
+		<script>
+			window.addEventListener("contextmenu", function (e) {
+				e.preventDefault()
+			})
+			var slider = document.getElementById("myRange")
+			var output = document.getElementById("demo")
+			output.innerHTML = slider.value
 
-        .slider::-moz-range-thumb {
-            width: 25px;
-            height: 25px;
-            background: #04AA6D;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-<!-- Slider main container -->
-<div class="swiper">
-    <!-- Additional required wrapper -->
-    <div class="swiper-wrapper" id="hhh">
-        <!-- Slides -->
-        <div class="swiper-slide" >
-            <div class="slidecontainer">
-                <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-                <p>Value: <span id="demo"></span></p>
-            </div>
-        </div>
-        <div class="swiper-slide">Slide 2</div>
-        <div class="swiper-slide">Slide 3</div>
-    </div>
-</div>
-<script>
-    const swiper = new Swiper('.swiper', {
-        // Optional parameters
-        loop: true
-    });
-    swiper.on('touchStart', (e) => {
-        swiper.allowTouchMove = true
-        let x = document.elementFromPoint(e.touches.currentX, e.touches.currentY);
-        if (x.className !== "swiper-slide swiper-slide-active"){
-            swiper.allowTouchMove = false
-        }
-    });
-</script>
-<script>
-    window.addEventListener("contextmenu", function(e) { e.preventDefault(); })
-    var slider = document.getElementById("myRange");
-    var output = document.getElementById("demo");
-    output.innerHTML = slider.value;
-
-    slider.oninput = function() {
-        output.innerHTML = this.value;
-    }
-</script>
-</body>
+			slider.oninput = function () {
+				output.innerHTML = this.value
+			}
+		</script>
+	</body>
 </html>

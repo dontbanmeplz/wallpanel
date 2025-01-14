@@ -1,155 +1,222 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-    <title>Web Panel</title>
-    <meta content="width=device-width" name="viewport">
-    <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet">
-    <link href="/style.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js">
-    </script>
-    <script type="text/javascript" src="https://sdk.scdn.co/spotify-player.js">
-    </script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js">
-    </script>
-    <script src="/bef.js">
-    </script>
-    <script type="text/javascript" src="spotify-web-api.js">
-    </script>
-</head>
-<body>
-<div id="everything">
-    <div class="screensaver hide">
-            <h1 class="time-BxRcQ9" id="time">00:00</h1>
-            <img class="weather-icon-BxRcQ9" src="https://openweathermap.org/img/wn/02n@2x.png" alt="Weather icon">
-            <div class="weather-BxRcQ9">
-                <div class="x0-vBN5m0" id ="ctemp">0&deg;</div>
-            </div>
-            <div class="date-BxRcQ9" id="dates">Tuesday December 11th</div>
-        <div class="widget-VxPVnb widget" id="w2">
-            <div class="rectangle-6"></div>
-            <div class="x1200-pm inter-normal-nobel-16px">12:00 pm</div>
-            <div class="clear-sky inter-normal-nobel-16px">Clear Sky</div>
-            <div class="x102 inter-normal-nobel-16px">102&deg;</div>
-            <img class="x01n2x-1" src="https://openweathermap.org/img/wn/01n@2x.png" alt="01n@2x 1">
-        </div>
-        <div class="widget-5ArFWQ widget" id="w1">
-            <div class="rectangle-6"></div>
-            <div class="x1200-pm inter-normal-nobel-16px">12:00 pm</div>
-            <div class="clear-sky inter-normal-nobel-16px">Clear Sky</div>
-            <div class="x102 inter-normal-nobel-16px">102&deg;</div>
-            <img class="x01n2x-1" src="https://openweathermap.org/img/wn/01n@2x.png" alt="01n@2x 1">
-        </div>
-        <div class="widget-Lk3E3L widget" id="w4">
-            <div class="rectangle-6"></div>
-            <div class="x1200-pm inter-normal-nobel-16px">12:00 pm</div>
-            <div class="clear-sky inter-normal-nobel-16px">Clear Sky</div>
-            <div class="x102 inter-normal-nobel-16px">102&deg;</div>
-            <img class="x01n2x-1" src="https://openweathermap.org/img/wn/01n@2x.png" alt="01n@2x 1">
-        </div>
-        <div class="widget-NQaQKn widget" id="w5">
-            <div class="rectangle-6"></div>
-            <div class="x1200-pm inter-normal-nobel-16px">12:00 pm</div>
-            <div class="clear-sky inter-normal-nobel-16px">Clear Sky</div>
-            <div class="x102 inter-normal-nobel-16px">102&deg;</div>
-            <img class="x01n2x-1" src="https://openweathermap.org/img/wn/01n@2x.png" alt="01n@2x 1">
-        </div>
-        <div class="widget-NbBwY9 widget" id="w3">
-            <div class="rectangle-6"></div>
-            <div class="x1200-pm inter-normal-nobel-16px">12:00 pm</div>
-            <div class="clear-sky inter-normal-nobel-16px">Clear Sky</div>
-            <div class="x102 inter-normal-nobel-16px">102&deg;</div>
-            <img class="x01n2x-1" src="https://openweathermap.org/img/wn/01n@2x.png" alt="01n@2x 1">
-        </div>
+	<head>
+		<title>Web Panel</title>
+		<meta content="width=device-width" name="viewport" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+			rel="stylesheet"
+		/>
+		<link href="/style.css" rel="stylesheet" />
+		<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+		<script src="/bef.js"></script>
+		<script type="text/javascript" src="spotify-web-api.js"></script>
+	</head>
+	<body>
+		<div id="everything">
+			<div class="screensaver hide">
+				<h1 class="time-BxRcQ9" id="time">00:00</h1>
+				<img
+					class="weather-icon-BxRcQ9"
+					src="https://openweathermap.org/img/wn/02n@2x.png"
+					alt="Weather icon"
+				/>
+				<div class="weather-BxRcQ9">
+					<div class="x0-vBN5m0" id="ctemp">0&deg;</div>
+				</div>
+				<div class="date-BxRcQ9" id="dates">Tuesday December 11th</div>
+				<div class="widget-VxPVnb widget" id="w2">
+					<div class="rectangle-6"></div>
+					<div class="x1200-pm inter-normal-nobel-16px">12:00 pm</div>
+					<div class="clear-sky inter-normal-nobel-16px">Clear Sky</div>
+					<div class="x102 inter-normal-nobel-16px">102&deg;</div>
+					<img
+						class="x01n2x-1"
+						src="https://openweathermap.org/img/wn/01n@2x.png"
+						alt="01n@2x 1"
+					/>
+				</div>
+				<div class="widget-5ArFWQ widget" id="w1">
+					<div class="rectangle-6"></div>
+					<div class="x1200-pm inter-normal-nobel-16px">12:00 pm</div>
+					<div class="clear-sky inter-normal-nobel-16px">Clear Sky</div>
+					<div class="x102 inter-normal-nobel-16px">102&deg;</div>
+					<img
+						class="x01n2x-1"
+						src="https://openweathermap.org/img/wn/01n@2x.png"
+						alt="01n@2x 1"
+					/>
+				</div>
+				<div class="widget-Lk3E3L widget" id="w4">
+					<div class="rectangle-6"></div>
+					<div class="x1200-pm inter-normal-nobel-16px">12:00 pm</div>
+					<div class="clear-sky inter-normal-nobel-16px">Clear Sky</div>
+					<div class="x102 inter-normal-nobel-16px">102&deg;</div>
+					<img
+						class="x01n2x-1"
+						src="https://openweathermap.org/img/wn/01n@2x.png"
+						alt="01n@2x 1"
+					/>
+				</div>
+				<div class="widget-NQaQKn widget" id="w5">
+					<div class="rectangle-6"></div>
+					<div class="x1200-pm inter-normal-nobel-16px">12:00 pm</div>
+					<div class="clear-sky inter-normal-nobel-16px">Clear Sky</div>
+					<div class="x102 inter-normal-nobel-16px">102&deg;</div>
+					<img
+						class="x01n2x-1"
+						src="https://openweathermap.org/img/wn/01n@2x.png"
+						alt="01n@2x 1"
+					/>
+				</div>
+				<div class="widget-NbBwY9 widget" id="w3">
+					<div class="rectangle-6"></div>
+					<div class="x1200-pm inter-normal-nobel-16px">12:00 pm</div>
+					<div class="clear-sky inter-normal-nobel-16px">Clear Sky</div>
+					<div class="x102 inter-normal-nobel-16px">102&deg;</div>
+					<img
+						class="x01n2x-1"
+						src="https://openweathermap.org/img/wn/01n@2x.png"
+						alt="01n@2x 1"
+					/>
+				</div>
+			</div>
+			<div class="swiper">
+				<!-- Additional required wrapper -->
+				<div class="swiper-wrapper" id="hhh">
+					<!-- Slides -->
+					<div class="swiper-slide">
+						<div class="slidecontainer">
+							<div class="topblock" id="b3"><div class="tite">Search</div></div>
+							<div class="topblock active" id="b2">
+								<div class="tite">Now Playing</div>
+							</div>
+							<div class="topblock" id="b1">
+								<div class="tite">Playlists</div>
+							</div>
+							<div class="frame-1 screen close" id="psongs"></div>
+							<div class="bdy hide" id="bdy1">
+								<div class="frame-1 screen" id="playlist"></div>
+							</div>
+							<div class="frame-1 screen close" id="qeee"></div>
 
-    </div>
-    <div class="swiper">
-        <!-- Additional required wrapper -->
-        <div class="swiper-wrapper" id="hhh">
+							<div class="bdy" id="bdy2">
+								<div class="now-playing screen">
+									<img
+										alt="ab67616d0000b273096a7fc9668305db9d3175fc 1"
+										class="ab67616d0000b273096a-q2Ud4x"
+										id="trackimg"
+										src="/img/ab67616d0000b273096a7fc9668305db9d3175fc-1.png"
+									/>
+									<h1 class="title-q2Ud4x" id="name">Nothing Playing</h1>
+									<div class="album-q2Ud4x" id="album">Album</div>
+									<div class="artist-q2Ud4x" id="artist">Artist</div>
+									<div id="hi">
+										<input
+											class="progressbar"
+											id="points"
+											max="10"
+											min="0"
+											name="points"
+											type="range"
+											value="0"
+										/>
+									</div>
+									<div class="x000-q2Ud4x x000" id="posit">0:00</div>
+									<div class="group-1-q2Ud4x" id="togglePlay">
+										<div class="ellipse-1-bJ8vx4"></div>
+										<img
+											alt="playicon 1"
+											class="playicon-1-bJ8vx4"
+											id="play"
+											src="/img/playicon.svg"
+										/><img
+											alt="playicon 1"
+											class="playicon-1-bJ8vx4 hide"
+											id="pause"
+											src="/img/pauseicon.svg"
+										/>
+									</div>
+									<img
+										alt="previousicon 1"
+										class="previousicon-1-q2Ud4x"
+										id="back"
+										src="/img/previousicon.svg"
+									/><img
+										class="nexticon-1-q2Ud4x"
+										id="skip"
+										src="/img/nexticon.svg"
+									/><img
+										id="queue"
+										class="queueicon-1-q2Ud4x"
+										src="/img/queueicon.svg"
+									/>
+									<div id="hearts">
+										<img
+											class="likeicon-1-q2Ud4x hide"
+											id="like"
+											src="/img/hearticon.svg"
+										/>
+										<img
+											class="likeicon-1-q2Ud4x"
+											id="notlike"
+											src="/img/heartoutlineicon.svg"
+										/>
+									</div>
+									<div class="x000-rUm8rt x000" id="durration">0:00</div>
+								</div>
+							</div>
+							<div class="bdy hide" id="bdy3">
+								<div class="searchbutton screen">
+									<img
+										class="ellipse-2-ab07IB"
+										src="/img/ellipse-2.svg"
+										alt="Ellipse 2"
+									/>
+									<img
+										id="hiii"
+										class="microphone-342-1-ab07IB"
+										src="/img/microphone-342-1.svg"
+										alt="microphone-342 1"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="swiper-slide">
+						<div class="slidecontainer">
+							<div class="onoff-GB5BqJ">
+								<img class="off-iFNN4R hide" src="/img/off@2x.png" />
+								<img class="on-iFNN4R" src="/img/on@2x.png" />
+								<div class="ellipse-4-iFNN4R"></div>
+							</div>
+							<div class="rectangle-7-GB5BqJ"></div>
+							<div class="rectangle-8-GB5BqJ"></div>
+							<img class="rectangle-9-GB5BqJ" src="/img/rectangle-9.svg" />
+							<div class="rectangle-10-GB5BqJ"></div>
+							<div class="rectangle-11-GB5BqJ"></div>
+							<img
+								class="rectangle-12-GB5BqJ"
+								src="/img/rectangle-9.svg"
+								alt="Rectangle 12"
+							/>
+							<div class="rectangle-13-GB5BqJ"></div>
+						</div>
+					</div>
+					<div class="swiper-slide">Slide 3</div>
+				</div>
+			</div>
+		</div>
 
-            <!-- Slides -->
-            <div class="swiper-slide">
-                <div class="slidecontainer">
-                    <div class="topblock" id="b3"><div class="tite">Search</div></div>
-                    <div class="topblock active" id="b2"><div class="tite">Now Playing</div></div>
-                    <div class="topblock" id="b1"><div class="tite">Playlists</div></div>
-                    <div class="frame-1 screen close" id="psongs">
+		<script>
+			window.addEventListener("contextmenu", function (e) {
+				e.preventDefault()
+			})
+		</script>
 
-                    </div>
-                    <div class="bdy hide" id="bdy1">
-                        <div class="frame-1 screen" id="playlist">
-
-                        </div>
-
-                    </div>
-                    <div class="frame-1 screen close" id="qeee">
-
-                    </div>
-
-                    <div class="bdy" id="bdy2">
-                        <div class="now-playing screen">
-                            <img alt="ab67616d0000b273096a7fc9668305db9d3175fc 1" class="ab67616d0000b273096a-q2Ud4x" id="trackimg" src="/img/ab67616d0000b273096a7fc9668305db9d3175fc-1.png">
-                            <h1 class="title-q2Ud4x" id="name">Nothing Playing</h1>
-                            <div class="album-q2Ud4x" id="album">
-                                Album
-                            </div>
-                            <div class="artist-q2Ud4x" id="artist">
-                                Artist
-                            </div>
-                            <div id="hi">
-                                <input class="progressbar" id="points" max="10" min="0" name="points" type="range" value="0">
-                            </div>
-                            <div class="x000-q2Ud4x x000" id="posit">
-                                0:00
-                            </div>
-                            <div class="group-1-q2Ud4x" id="togglePlay">
-                                <div class="ellipse-1-bJ8vx4"></div><img alt="playicon 1" class="playicon-1-bJ8vx4" id="play" src="/img/playicon.svg"><img alt="playicon 1" class="playicon-1-bJ8vx4 hide" id="pause" src="/img/pauseicon.svg"></div><img alt="previousicon 1" class="previousicon-1-q2Ud4x" id="back" src="/img/previousicon.svg"><img class="nexticon-1-q2Ud4x" id="skip" src="/img/nexticon.svg"><img id="queue" class="queueicon-1-q2Ud4x" src="/img/queueicon.svg">
-                            <div id="hearts"><img class="likeicon-1-q2Ud4x hide" id="like" src="/img/hearticon.svg"> <img class="likeicon-1-q2Ud4x" id="notlike" src="/img/heartoutlineicon.svg"></div>
-                            <div class="x000-rUm8rt x000" id="durration">
-                                0:00
-                            </div>
-                        </div>
-
-
-                    </div>
-                    <div class="bdy hide" id="bdy3">
-                        <div  class="searchbutton screen"  >
-                            <img class="ellipse-2-ab07IB" src="/img/ellipse-2.svg" alt="Ellipse 2">
-                            <img  id = "hiii" class="microphone-342-1-ab07IB" src="/img/microphone-342-1.svg" alt="microphone-342 1">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="swiper-slide">
-                <div class="slidecontainer">
-                    <div class="onoff-GB5BqJ">
-                        <img class="off-iFNN4R hide" src="/img/off@2x.png">
-                        <img class="on-iFNN4R" src="/img/on@2x.png">
-                        <div class="ellipse-4-iFNN4R"></div>
-                    </div>
-                    <div class="rectangle-7-GB5BqJ">
-                    </div>
-                    <div class="rectangle-8-GB5BqJ"></div><img class="rectangle-9-GB5BqJ" src="/img/rectangle-9.svg"><div class="rectangle-10-GB5BqJ"></div><div class="rectangle-11-GB5BqJ"></div><img class="rectangle-12-GB5BqJ" src="/img/rectangle-9.svg"  alt="Rectangle 12"><div class="rectangle-13-GB5BqJ"></div>
-                </div>
-            </div>
-            <div class="swiper-slide">
-                Slide 3
-            </div>
-        </div>
-
-    </div>
-</div>
-<script>
-
-
-</script>
-<script>
-    window.addEventListener("contextmenu", function(e) { e.preventDefault(); })
-</script>
-
-</script>
-<footer>
-
-    <script type="text/javascript" src="/ess.js"></script>
-</footer>
-</body>
+		<footer>
+			<script type="text/javascript" src="/ess.js"></script>
+		</footer>
+	</body>
 </html>
