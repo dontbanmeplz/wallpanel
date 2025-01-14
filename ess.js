@@ -321,10 +321,11 @@ window.onload = async () => {
 	var song = ""
 	var dur = 0
 
-	while (
-		ws.readyState !== WebSocket.CONNECTING &&
-		ws.readyState !== WebSocket.CLOSED
-	) {}
+	while (ws.readyState != 1) {
+		console.log("no ws");
+		console.log(ws.readyState);
+		await new Promise(r => setTimeout(r, 2000));
+	}
 	console.log("ws connected")
 	rrefreshtoken()
 	access_token = localStorage.getItem("access_token")
