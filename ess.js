@@ -46,6 +46,7 @@ async function getSpotifyUris(artist, track) {
             });
             let data = await response.json();
             if (data.tracks.items.length > 0) {
+				console.log(data.tracks.item[0].name)
                 return data.tracks.items[0].uri;
             } else {
                 return null;
