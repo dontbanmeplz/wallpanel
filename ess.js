@@ -34,6 +34,7 @@ function getSimilarTracksPromise(artist, track) {
     });
 }
 async function getSpotifyUris(artist, track) {
+	console.log(121212)
     try {
         let similarTracksData = await getSimilarTracksPromise(artist, track);
 		let refresh_token = localStorage.getItem("refresh_token")
