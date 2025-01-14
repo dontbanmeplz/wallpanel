@@ -34,15 +34,14 @@ function getSimilarTracksPromise(artist, track) {
     });
 }
 async function getSpotifyUris(artist, track) {
-	console.log(121212)
     try {
         let similarTracksData = await getSimilarTracksPromise(artist, track);
-		let refresh_token = localStorage.getItem("refresh_token")
+		let access_token = localStorage.getItem("access_token")
         let spotifyUris = await Promise.all(similarTracksData.similartracks.track.map(async track => {
             let searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(track.artist.name)}%20${encodeURIComponent(track.name)}&type=track&limit=1`;
             let response = await fetch(searchUrl, {
                 headers: {
-                    'Authorization': 'Bearer ' + refresh_token
+                    'Authorization': 'Bearer ' + access_token
                 }
             });
             let data = await response.json();
@@ -103,7 +102,7 @@ ws.onopen = async (event) => {
 }
 function rrefreshtoken() {
 	refreshToken()
-	refresh_token = localStorage.getItem("refresh_token")
+	access_token = localStorage.getItem("access_token")
 	spotifyApi.setAccessToken(access_token)
 	if (
 		ws.readyState !== WebSocket.CONNECTING &&
