@@ -16,6 +16,47 @@ var Sound = (function () {
 		return snd
 	}
 })()
+var lastfm = new LastFM({
+    apiKey    : '83c724c119c96d4c04e05f9c4ff63544',
+    apiSecret : 'f876c1f0177b6b2bf33a528ccf9f7642',
+});
+
+function getSimilarTracksPromise(artist, track) {
+    return new Promise((resolve, reject) => {
+        lastfm.track.getSimilar({artist: artist, track: track}, {
+            success: function(data) {
+                resolve(data);
+            },
+            error: function(code, message) {
+                reject(new Error(`Error code: ${code}, Message: ${message}`));
+            }
+        });
+    });
+}
+async function getSpotifyUris(artist, track) {
+    try {
+        let similarTracksData = await getSimilarTracksPromise(artist, track);
+		let refresh_token = localStorage.getItem("refresh_token")
+        let spotifyUris = await Promise.all(similarTracksData.similartracks.track.map(async track => {
+            let searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(track.artist.name)}%20${encodeURIComponent(track.name)}&type=track&limit=1`;
+            let response = await fetch(searchUrl, {
+                headers: {
+                    'Authorization': 'Bearer ' + refresh_token
+                }
+            });
+            let data = await response.json();
+            if (data.tracks.items.length > 0) {
+                return data.tracks.items[0].uri;
+            } else {
+                return null;
+            }
+        }));
+        return spotifyUris.filter(uri => uri !== null);
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
 const swiper = new Swiper(".swiper", {
 	// Optional parameters
 })
@@ -211,13 +252,9 @@ function ttrash(id) {
 	localStorage.setItem("queue", JSON.stringify(queue))
 }
 async function psong(id) {
-	await spotifyApi.play((options = { uris: ["spotify:track:" + id] }))
-	let recs = await spotifyApi.getRecommendations(
-		(options = {
-			limit: 30,
-			seed_tracks: id,
-		}),
-	)
+	await spotifyApi.play((options = { uris: ["spotify:track:" + id] }));
+	let t = await spotifyApi.getTrack(id);
+	let recs = getSpotifyUris(t.artists[0].name,t.name);
 	let tempq = []
 	for (const i in recs.tracks) {
 		tempq.push(recs.tracks[i])
@@ -368,9 +405,7 @@ window.onload = async () => {
 			}
 		} else {
 			cqueue = { type: "track", uri: n.item.uri }
-			let recs = await spotifyApi.getRecommendations(
-				(options = { limit: 30, seed_tracks: n.item.id }),
-			)
+			let recs = getSpotifyUris(n.item.artists[0].name,n.item.name);
 			let tempq = []
 			for (const i in recs.tracks) {
 				tempq.push(recs.tracks[i])
@@ -404,9 +439,7 @@ window.onload = async () => {
 		} else {
 			let p = await spotifyApi.getMyCurrentPlaybackState()
 			cqueue = { type: "track", uri: p.item.uri }
-			let recs = await spotifyApi.getRecommendations(
-				(options = { limit: 30, seed_tracks: p.item.id }),
-			)
+			let recs = getSpotifyUris(p.item.artists[0].name,p.item.name);
 			let tempq = []
 			for (const i in recs.tracks) {
 				tempq.push(recs.tracks[i])
@@ -483,12 +516,8 @@ window.onload = async () => {
 				await spotifyApi.play(
 					(options = { uris: ["spotify:track:" + tracks.tracks.items[0].id] }),
 				)
-				recs = await spotifyApi.getRecommendations(
-					(options = {
-						limit: 30,
-						seed_tracks: tracks.tracks.items[0].id,
-					}),
-				)
+				let recs = getSpotifyUris(tracks.tracks.items[0].artists[0].name,tracks.tracks.items[0].name);
+				p.item
 				tempq = []
 				for (const i in recs.tracks) {
 					tempq.push(recs.tracks[i])
@@ -633,12 +662,7 @@ window.onload = async () => {
 			case "psong":
 				s = false
 				await spotifyApi.play((options = { uris: ["spotify:track:" + msg.id] }))
-				recs = await spotifyApi.getRecommendations(
-					(options = {
-						limit: 30,
-						seed_tracks: tracks.tracks.items[0].id,
-					}),
-				)
+				recs = getSpotifyUris(tracks.tracks.items[0].artists[0].name,tracks.tracks.items[0].name);
 				tempq = []
 				for (const i in recs.tracks) {
 					tempq.push(recs.tracks[i])
@@ -823,9 +847,7 @@ window.onload = async () => {
 				localStorage.setItem("queue", JSON.stringify(queue))
 			} else {
 				cqueue = { type: "track", uri: p.item.uri }
-				let recs = await spotifyApi.getRecommendations(
-					(options = { limit: 30, seed_tracks: p.item.id }),
-				)
+				let recs = getSpotifyUris(p.item.artists[0].name,p.item.name);
 				let tempq = []
 				for (const i in recs.tracks) {
 					tempq.push(recs.tracks[i])
