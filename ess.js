@@ -37,7 +37,7 @@ async function getSpotifyUris(artist, track) {
     try {
         let similarTracksData = await getSimilarTracksPromise(artist, track);
 		let access_token = localStorage.getItem("access_token")
-        let spotifyUris = await Promise.all(similarTracksData.similartracks.track.map(async track => {
+        let spotifyUris = await Promise.all(similarTracksData.similartracks.track.slice(0, 20).map(async track => {
             let searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(track.artist.name)}%20${encodeURIComponent(track.name)}&type=track&limit=1`;
             let response = await fetch(searchUrl, {
                 headers: {
