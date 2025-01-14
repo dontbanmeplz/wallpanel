@@ -254,6 +254,7 @@ async function psong(id) {
 	await spotifyApi.play((options = { uris: ["spotify:track:" + id] }));
 	let t = await spotifyApi.getTrack(id);
 	let recs = await getSpotifyUris(t.artists[0].name,t.name);
+	console.log(recs)
 	let tempq = []
 	for (const i in recs.tracks) {
 		tempq.push(recs.tracks[i])
