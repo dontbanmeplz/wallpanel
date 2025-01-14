@@ -256,8 +256,8 @@ async function psong(id) {
 	let recs = await getSpotifyUris(t.artists[0].name,t.name);
 	console.log(recs)
 	let tempq = []
-	for (const i in recs.tracks) {
-		tempq.push(recs.tracks[i])
+	for (const i in recs) {
+		tempq.push(recs[i])
 	}
 	queue = tempq
 	cqueue = { type: "track", uri: "spotify:track:" + id }
@@ -407,8 +407,8 @@ window.onload = async () => {
 			cqueue = { type: "track", uri: n.item.uri }
 			let recs = getSpotifyUris(n.item.artists[0].name,n.item.name);
 			let tempq = []
-			for (const i in recs.tracks) {
-				tempq.push(recs.tracks[i])
+			for (const i in recs) {
+				tempq.push(recs[i])
 			}
 			queue = tempq
 		}
@@ -441,8 +441,8 @@ window.onload = async () => {
 			cqueue = { type: "track", uri: p.item.uri }
 			let recs = getSpotifyUris(p.item.artists[0].name,p.item.name);
 			let tempq = []
-			for (const i in recs.tracks) {
-				tempq.push(recs.tracks[i])
+			for (const i in recs) {
+				tempq.push(recs[i])
 			}
 			queue = tempq
 			await spotifyApi.play(
@@ -519,8 +519,8 @@ window.onload = async () => {
 				let recs = getSpotifyUris(tracks.tracks.items[0].artists[0].name,tracks.tracks.items[0].name);
 				p.item
 				tempq = []
-				for (const i in recs.tracks) {
-					tempq.push(recs.tracks[i])
+				for (const i in recs) {
+					tempq.push(recs[i])
 				}
 				queue = tempq
 				cqueue = { type: "track", uri: tracks.tracks.items[0].uri }
@@ -664,8 +664,8 @@ window.onload = async () => {
 				await spotifyApi.play((options = { uris: ["spotify:track:" + msg.id] }))
 				recs = getSpotifyUris(tracks.tracks.items[0].artists[0].name,tracks.tracks.items[0].name);
 				tempq = []
-				for (const i in recs.tracks) {
-					tempq.push(recs.tracks[i])
+				for (const i in recs) {
+					tempq.push(recs[i])
 				}
 				queue = tempq
 				let t = await spotifyApi.getTrack(id)
@@ -849,8 +849,8 @@ window.onload = async () => {
 				cqueue = { type: "track", uri: p.item.uri }
 				let recs = getSpotifyUris(p.item.artists[0].name,p.item.name);
 				let tempq = []
-				for (const i in recs.tracks) {
-					tempq.push(recs.tracks[i])
+				for (const i in recs) {
+					tempq.push(recs[i])
 				}
 				queue = tempq
 				back = []
