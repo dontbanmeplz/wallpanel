@@ -1525,9 +1525,10 @@ var SpotifyWebApi = (function () {
 	 */
 	Constr.prototype.getRecommendations = async function (options, callback) {
 		
-		let response = await fetch('https://soundlens.pro/api/spotify-replacement/recommendations?seed_tracks=' + options["seed_tracks"] + "&limit=" + options["limit"]);
+		/*let response = await fetch('https://soundlens.pro/api/spotify-replacement/recommendations?seed_tracks=' + options["seed_tracks"] + "&limit=" + options["limit"]);
 		let jsonResponse = await response.json();
-		return jsonResponse
+		return jsonResponse*/
+		return {};
 		
 	}
 
