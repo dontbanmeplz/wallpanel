@@ -700,8 +700,9 @@ window.onload = async () => {
 	$("#queue").click(async function () {
 		let f1 = document.getElementById("qeee")
 		f1.innerHTML = ""
+		queue = JSON.parse(localStorage.getItem("queue"))
 		for (const e in queue) {
-			let d = queue[e]
+			let d = spotifyApi.getTrack(queue[e].replace("spotify:track:", ""))
 			f1.insertAdjacentHTML(
 				"beforeend",
 				'<div class="group-2-VxPVnb">\r\n                        <div class="rectangle-4-IHYDQL">\r\n                        </div>\r\n                        <img class="ab67616d0000b273096a-IHYDQL" src="' +
