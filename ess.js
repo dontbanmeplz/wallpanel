@@ -60,7 +60,6 @@ async function getSpotifyUris(artist, track) {
     }
 }
 const swiper = new Swiper(".swiper", {
-	// Optional parameters
 })
 swiper.on("touchStart", (e) => {
 	swiper.allowTouchMove = true
