@@ -37,7 +37,7 @@ async function getSpotifyUris(artist, track) {
     try {
         let similarTracksData = await getSimilarTracksPromise(artist, track);
 		let access_token = localStorage.getItem("access_token")
-        let spotifyUris = await Promise.all(similarTracksData.similartracks.track.slice(0, 20).map(async track => {
+        let spotifyUris = await Promise.all(similarTracksData.similartracks.track.slice(0, 5).map(async track => {
             let searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(track.artist.name)}%20${encodeURIComponent(track.name)}&type=track&limit=1`;
             let response = await fetch(searchUrl, {
                 headers: {
@@ -254,15 +254,14 @@ async function psong(id) {
 	await spotifyApi.play((options = { uris: ["spotify:track:" + id] }));
 	let t = await spotifyApi.getTrack(id);
 	let recs = await getSpotifyUris(t.artists[0].name,t.name);
-	console.log(recs)
-	let tempq = []
+	/*let tempq = []
 	for (const i in recs) {
 		tempq.push(recs[i])
 	}
-	queue = tempq
+	queue = tempq*/
 	cqueue = { type: "track", uri: "spotify:track:" + id }
 	localStorage.setItem("cqueue", JSON.stringify(cqueue))
-	localStorage.setItem("queue", JSON.stringify(queue))
+	//localStorage.setItem("queue", JSON.stringify({}))
 	document.getElementById("qeee").className = "frame-1 screen close"
 	document.getElementById("psongs").className = "frame-1 screen close"
 	$(".topblock").each(function () {
@@ -516,16 +515,16 @@ window.onload = async () => {
 				await spotifyApi.play(
 					(options = { uris: ["spotify:track:" + tracks.tracks.items[0].id] }),
 				)
-				let recs = getSpotifyUris(tracks.tracks.items[0].artists[0].name,tracks.tracks.items[0].name);
+				/*let recs = getSpotifyUris(tracks.tracks.items[0].artists[0].name,tracks.tracks.items[0].name);
 				p.item
 				tempq = []
 				for (const i in recs) {
 					tempq.push(recs[i])
 				}
-				queue = tempq
+				queue = tempq*/
 				cqueue = { type: "track", uri: tracks.tracks.items[0].uri }
 				localStorage.setItem("cqueue", JSON.stringify(cqueue))
-				localStorage.setItem("queue", JSON.stringify(queue))
+				//localStorage.setItem("queue", JSON.stringify(queue))
 				await spotifyApi.setVolume(vol)
 				break
 			case "wake":
@@ -662,16 +661,16 @@ window.onload = async () => {
 			case "psong":
 				s = false
 				await spotifyApi.play((options = { uris: ["spotify:track:" + msg.id] }))
-				recs = getSpotifyUris(tracks.tracks.items[0].artists[0].name,tracks.tracks.items[0].name);
+				/*recs = getSpotifyUris(tracks.tracks.items[0].artists[0].name,tracks.tracks.items[0].name);
 				tempq = []
 				for (const i in recs) {
 					tempq.push(recs[i])
 				}
-				queue = tempq
+				queue = tempq*/
 				let t = await spotifyApi.getTrack(id)
 				cqueue = { type: "track", uri: t.uri }
 				localStorage.setItem("cqueue", JSON.stringify(cqueue))
-				localStorage.setItem("queue", JSON.stringify(queue))
+				//localStorage.setItem("queue", JSON.stringify({queue}))
 				break
 			case "playp":
 				s = false
