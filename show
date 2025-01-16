@@ -1,1 +1,18 @@
-f
+curl 'https://guc3-spclient.spotify.com/social-connect/v2/sessions/current_or_new?activate=true' \
+-H 'Host: guc3-spclient.spotify.com' \
+-H 'Connection: keep-alive' \
+-H 'Origin: https://xpui.app.spotify.com' \
+-H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.117 Spotify/1.2.52.442 Safari/537.36' \
+-H 'accept: application/json' \
+-H 'accept-language: en' \
+-H 'app-platform: OSX_ARM64' \
+-H 'authorization: Bearer BQA0Km_-KplAB2ElUfDhi2h1AGS2mymsb3CSopUAraKaQGhn-5EXSdI4Li3o14cOVBuC0LPnTbBir9qH1vnarGdj9n4myJqXnWLMvNRNdrJzEPszw1fyHxNTdWkNft05o1Bl10qTuxWb5R2QCRq4Fn5O56059ax7VHxFfdVOk99exoHdIbZPpx_u2YOYl-uVEKCWl2s11Ycxxc19-AeWZ2N6KF1OTmU_9LwDxHgWnyuP0laGXmIXiNoPBcdOK2A9MRKzD-Yv-vxEolpu4QvPdiqKyd12QMdjA85lgR4-zbLJswRS8jfpTbuvlMiYJB3q_GOqx0TqoghxQTyKhvDIvb3xBHx_wMeTaea49z-1CICXDOJf_bKf7AE9QtlYRqxKqGwVVg' \
+-H 'content-type: application/json;charset=UTF-8' \
+-H 'sec-ch-ua: "Not?A_Brand";v="99", "Chromium";v="130"' \
+-H 'sec-ch-ua-mobile: ?0' \
+-H 'sec-ch-ua-platform: "macOS"' \
+-H 'spotify-app-version: 1.2.52.442' \
+-H 'Sec-Fetch-Site: same-site' \
+-H 'Sec-Fetch-Mode: cors' \
+-H 'Sec-Fetch-Dest: empty' \
+-H 'Referer: https://xpui.app.spotify.com/'

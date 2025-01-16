@@ -97,6 +97,26 @@ var SpotifyWebApi = (function () {
 			req.open(type, _buildUrl(requestData.url, requestData.params))
 			if (_accessToken) {
 				req.setRequestHeader("Authorization", "Bearer " + _accessToken)
+			} 
+			let d = requestData.jam || false
+			if (d){
+				req.setRequestHeader('Host', 'guc3-spclient.spotify.com');
+				req.setRequestHeader('Connection', 'keep-alive');
+				req.setRequestHeader('Origin', 'https://xpui.app.spotify.com');
+				req.setRequestHeader('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.117 Spotify/1.2.52.442 Safari/537.36');
+				req.setRequestHeader('accept', 'application/json');
+				req.setRequestHeader('accept-language', 'en');
+				req.setRequestHeader('app-platform', 'OSX_ARM64');
+				req.setRequestHeader('authorization', 'Bearer ' + _accessToken);
+				req.setRequestHeader('content-type', 'application/json;charset=UTF-8');
+				req.setRequestHeader('sec-ch-ua', '"Not?A_Brand";v="99", "Chromium";v="130"');
+				req.setRequestHeader('sec-ch-ua-mobile', '?0');
+				req.setRequestHeader('sec-ch-ua-platform', '"macOS"');
+				req.setRequestHeader('spotify-app-version', '1.2.52.442');
+				req.setRequestHeader('Sec-Fetch-Site', 'same-site');
+				req.setRequestHeader('Sec-Fetch-Mode', 'cors');
+				req.setRequestHeader('Sec-Fetch-Dest', 'empty');
+				req.setRequestHeader('Referer', 'https://xpui.app.spotify.com/');
 			}
 
 			req.onreadystatechange = function () {
@@ -1592,7 +1612,8 @@ var SpotifyWebApi = (function () {
 	}
 	Constr.prototype.sjam = function (options, callback) {
 		var requestData = {
-			url: "https://spclient.wg.spotify.com/social-connect/v2/sessions/current_or_new?activate=true&alt=json"
+			url: "https://spclient.wg.spotify.com/social-connect/v2/sessions/current_or_new?activate=true&alt=json",
+			jam: true
 		}
 		return _checkParamsAndPerformRequest(requestData, options, callback)
 	}
@@ -1600,6 +1621,7 @@ var SpotifyWebApi = (function () {
 		var requestData = {
 			url: "https://guc3-spclient.spotify.com/url-dispenser/v1/generate-url",
 			type: "POST",
+			jam: true,
 			postData: {"spotify_uri":id,"custom_data":[{"key":"ssp","value":"1"},{"key":"app_destination","value":"socialsession"}],"link_preview":{"title":"Join my fucking Jam on Spotify","image_url":"https://avatars.githubusercontent.com/u/59851616?v=4"},"utm_parameters":{"utm_campaign":null,"utm_term":null,"utm_medium":"qr","utm_content":null,"utm_source":"share-options-sheet"}}
 		}
 		return _checkParamsAndPerformRequest(requestData, options, callback)
