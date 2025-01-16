@@ -1,6 +1,7 @@
+var queue = JSON.parse(localStorage.getItem("queue")) || []
+var cqueue = JSON.parse(localStorage.getItem("cqueue")) || {}
+var back = JSON.parse(localStorage.getItem("back")) || []
 var vol = parseFloat(localStorage.getItem("vol")) || 1
-var jam = null;
-var link = null;
 //var ws = new WebSocket("wss://ws.sawicz.com");
 var ws = new WebSocket("ws://localhost:8080")
 var Sound = (function () {
@@ -232,37 +233,35 @@ async function getallup() {
 	return output
 }
 setInterval(rrefreshtoken, 1800000)
-function clearSpotifyQueue(init) { //Recursive
-	let i=init;
-	let id="0ICWP0NnWaJUCgp6EvgNmT"; //Mission Imposible, my 'tag' track. This can also be changed so that you can send an specific id to the function.
-	let tId="";
-	if(i>=25){setLoops(); return;} //Max number of tracks in the queue that will be removed
-	if(i===0){  //the first time send the track to the queue
-	   clearInterval(theLoop);  //specific to my application. Stops updating the UI
-	   $.ajax({
-		  url: 'https://api.spotify.com/v1/me/player/queue?uri=spotify:track:'+id , method:'POST', 
-		  headers: Player.getHeaders()  //replace by corresponding headers
-	   }).done(setTimeout(function(){Queue.clearSpotifyQueue(i+1);},1000)); //adds some delay before calling the function again, otherwise it won't work
-	} else {  
-	   $.ajax({ 
-		  url: 'https://api.spotify.com/v1/me/player', method: 'GET', headers: Player.getHeaders()
-	   }).done(function (data) {
-		  tId = data.item.id;
-		  if(tId===id) {
-			 Player.next(0);  //implements a simple player/next or eliminate if you want to play the 'tag' track 
-			 setLoops(); //specific to my application...change it.
-		  } else {
-			 $.ajax({
-				url: 'https://api.spotify.com/v1/me/player/next', method:'POST', headers: Player.getHeaders()  
-			 }).done(setTimeout(function(){Queue.clearSpotifyQueue(i+1);},2000));
-		  }
-	   });
+function trash(id) {
+	for (const w in queue) {
+		if (queue[w].id === id) {
+			queue.splice(w, 1)
+		}
 	}
+	localStorage.setItem("queue", JSON.stringify(queue))
+	$("#queue").click()
+}
+function ttrash(id) {
+	for (const w in queue) {
+		if (queue[w].id === id) {
+			queue.splice(w, 1)
+		}
+	}
+	localStorage.setItem("queue", JSON.stringify(queue))
 }
 async function psong(id) {
 	await spotifyApi.play((options = { uris: ["spotify:track:" + id] }));
 	let t = await spotifyApi.getTrack(id);
 	let recs = await getSpotifyUris(t.artists[0].name,t.name);
+	/*let tempq = []
+	for (const i in recs) {
+		tempq.push(recs[i])
+	}
+	queue = tempq*/
+	cqueue = { type: "track", uri: "spotify:track:" + id }
+	localStorage.setItem("cqueue", JSON.stringify(cqueue))
+	//localStorage.setItem("queue", JSON.stringify({}))
 	document.getElementById("qeee").className = "frame-1 screen close"
 	document.getElementById("psongs").className = "frame-1 screen close"
 	$(".topblock").each(function () {
@@ -275,7 +274,9 @@ async function psong(id) {
 	document.getElementById("bdy2").className = "bdy"
 }
 async function queuesong(id) {
-	await spotifyApi.queue("spotify:track:"+id)
+	let n = await spotifyApi.getTrack(id)
+	queue.unshift(n)
+	localStorage.setItem("queue", JSON.stringify(queue))
 	document.getElementById("qeee").className = "frame-1 screen close"
 	document.getElementById("psongs").className = "frame-1 screen close"
 	$(".topblock").each(function () {
@@ -308,7 +309,9 @@ async function openp(id) {
 				d.album.name +
 				'</div>\r\n                        <div class="artist-IHYDQL">' +
 				d.artists[0].name +
-				'</div>\r\n  <img class="psng" src="/img/playiconwhite.svg" onclick="psong(\'' +
+				'</div>\r\n       <img class="qtrash" src="/img/queueicon.svg" onclick="queuesong(\'' +
+				d.id +
+				'\')">\r\n  <img class="psng" src="/img/playiconwhite.svg" onclick="psong(\'' +
 				d.id +
 				'\')">               <div class="x0000-IHYDQL">' +
 				mtms(d.duration_ms) +
@@ -321,7 +324,17 @@ async function pplaylist(id) {
 	if (!e) var e = window.event
 	e.cancelBubble = true
 	if (e.stopPropagation) e.stopPropagation()
-	await spotifyApi.play(context_uri="spotify:playlist:" + id)
+	if (id === "user") {
+		queue = await getallut()
+	} else {
+		queue = await getallpt(id)
+	}
+	await spotifyApi.play(
+		(options = { uris: ["spotify:track:" + queue.shift().id] }),
+	)
+	cqueue = { type: "playlist", uri: "spotify:playlist:" + id }
+	localStorage.setItem("cqueue", JSON.stringify(cqueue))
+	localStorage.setItem("queue", JSON.stringify(queue))
 	document.getElementById("qeee").className = "frame-1 screen close"
 	document.getElementById("psongs").className = "frame-1 screen close"
 	$(".topblock").each(function () {
@@ -374,11 +387,34 @@ window.onload = async () => {
 	}
 	await spotifyApi.transferMyPlayback([devid])
 	console.log("Device found")
-	//start jam
-	//make interval program to keep it running
-	jam = await spotifyApi.sjam();
-	link = await spotifyApi.mlink(jam.join_session_uri);
-	var qrcode = new QRCode("qrcode");
+	if (cqueue.length !== 0 && queue.length !== 0) {
+		//pass
+	} else {
+		let n = await spotifyApi.getMyCurrentPlaybackState()
+		console.log(n)
+		if (n.context) {
+			cqueue = { type: n.context.type, uri: n.context.uri }
+			if (n.context.type === "playlist") {
+				queue = await getallpt(n.context.uri.replace("spotify:playlist:", ""))
+			} else if (
+				n.context.type === "collection" &&
+				n.context.href === "https://api.spotify.com/v1/me/tracks"
+			) {
+				queue = await getallut(n.item.id)
+			}
+		} else {
+			cqueue = { type: "track", uri: n.item.uri }
+			let recs = getSpotifyUris(n.item.artists[0].name,n.item.name);
+			let tempq = []
+			for (const i in recs) {
+				tempq.push(recs[i])
+			}
+			queue = tempq
+		}
+		localStorage.setItem("cqueue", JSON.stringify(cqueue))
+		localStorage.setItem("queue", JSON.stringify(queue))
+	}
+
 	document.getElementById("togglePlay").onclick = async function () {
 		let p = await spotifyApi.getMyCurrentPlaybackState()
 		if (p.is_playing) {
@@ -391,7 +427,29 @@ window.onload = async () => {
 		updater()
 	}
 	document.getElementById("skip").onclick = async function () {
-		await spotifyApi.skipToNext();
+		let p = await spotifyApi.getMyCurrentPlaybackState()
+		back.unshift(p.item.id)
+		localStorage.setItem("back", JSON.stringify(back))
+		if (queue.length !== 0) {
+			await spotifyApi.play(
+				(options = { uris: ["spotify:track:" + queue.shift().id] }),
+			)
+			localStorage.setItem("queue", JSON.stringify(queue))
+		} else {
+			let p = await spotifyApi.getMyCurrentPlaybackState()
+			cqueue = { type: "track", uri: p.item.uri }
+			let recs = getSpotifyUris(p.item.artists[0].name,p.item.name);
+			let tempq = []
+			for (const i in recs) {
+				tempq.push(recs[i])
+			}
+			queue = tempq
+			await spotifyApi.play(
+				(options = { uris: ["spotify:track:" + queue.shift().id] }),
+			)
+			localStorage.setItem("cqueue", JSON.stringify(cqueue))
+			localStorage.setItem("queue", JSON.stringify(queue))
+		}
 		updater()
 	}
 	document.getElementById("hearts").onclick = async function () {
@@ -416,7 +474,16 @@ window.onload = async () => {
 		if (x.progress_ms > 5000) {
 			await spotifyApi.seek(0)
 		} else {
-			await spotifyApi.skipToPrevious();
+			if (back.length !== 0) {
+				await spotifyApi.play(
+					(options = { uris: ["spotify:track:" + back.shift()] }),
+				)
+				queue.unshift(x.item)
+				localStorage.setItem("queue", JSON.stringify(queue))
+				localStorage.setItem("back", JSON.stringify(back))
+			} else {
+				await spotifyApi.seek(0)
+			}
 		}
 		updater()
 	}
@@ -448,6 +515,16 @@ window.onload = async () => {
 				await spotifyApi.play(
 					(options = { uris: ["spotify:track:" + tracks.tracks.items[0].id] }),
 				)
+				/*let recs = getSpotifyUris(tracks.tracks.items[0].artists[0].name,tracks.tracks.items[0].name);
+				p.item
+				tempq = []
+				for (const i in recs) {
+					tempq.push(recs[i])
+				}
+				queue = tempq*/
+				cqueue = { type: "track", uri: tracks.tracks.items[0].uri }
+				localStorage.setItem("cqueue", JSON.stringify(cqueue))
+				//localStorage.setItem("queue", JSON.stringify(queue))
 				await spotifyApi.setVolume(vol)
 				break
 			case "wake":
@@ -530,17 +607,20 @@ window.onload = async () => {
 				await spotifyApi.seek(6000)
 				document.getElementById("back").click()
 				break
+			case "trash":
+				s = false
+				ttrash(msg.id)
+				ws.send(JSON.stringify({ type: "q" }))
+				break
 			case "getqueue":
 				s = false
-				queue = await spotifyApi.gqueue();
-				queue = queue.queue
 				ws.send(JSON.stringify({ type: "squeue", queue: queue }))
 				break
 			case "queue":
 				s = false
-				await spotifyApi.queue("spotify:track:" + msg.id)
-				queue = await spotifyApi.gqueue()
-				queue = queue.queue
+				let ss = await spotifyApi.getTrack(msg.id)
+				queue.unshift(ss)
+				localStorage.setItem("queue", JSON.stringify(queue))
 				ws.send(JSON.stringify({ type: "squeue", queue: queue }))
 				break
 			case "gstate":
@@ -619,8 +699,7 @@ window.onload = async () => {
 	$("#queue").click(async function () {
 		let f1 = document.getElementById("qeee")
 		f1.innerHTML = ""
-		queue = await spotifyApi.gqueue()
-		queue = queue.queue
+		queue = JSON.parse(localStorage.getItem("queue"))
 		for (const e in queue) {
 			let d = queue[e]
 			f1.insertAdjacentHTML(
@@ -633,7 +712,9 @@ window.onload = async () => {
 					d.album.name +
 					'</div>\r\n                        <div class="artist-IHYDQL">' +
 					d.artists[0].name +
-					'</div>\r\n                       <div class="x0000-IHYDQL">' +
+					'</div>\r\n       <img class="trash" src="/img/trash.svg" onclick="trash(\'' +
+					d.id +
+					'\')">                <div class="x0000-IHYDQL">' +
 					mtms(d.duration_ms) +
 					"</div>\r\n                    </div> \r\n <br>",
 			)
@@ -755,7 +836,28 @@ window.onload = async () => {
 		}
 		x = (seekBar.value / seekBar.max) * 100
 		if (x > 99.7 && nex === true) {
-			await spotifyApi.skipToPrevious();
+			let p = await spotifyApi.getMyCurrentPlaybackState()
+			back.unshift(p.item.id)
+			localStorage.setItem("back", JSON.stringify(back))
+			if (queue.length !== 0) {
+				nex = false
+				await spotifyApi.play(
+					(options = { uris: ["spotify:track:" + queue.shift().id] }),
+				)
+				localStorage.setItem("queue", JSON.stringify(queue))
+			} else {
+				cqueue = { type: "track", uri: p.item.uri }
+				let recs = getSpotifyUris(p.item.artists[0].name,p.item.name);
+				let tempq = []
+				for (const i in recs) {
+					tempq.push(recs[i])
+				}
+				queue = tempq
+				back = []
+				localStorage.setItem("back", JSON.stringify(back))
+				localStorage.setItem("cqueue", JSON.stringify(cqueue))
+				localStorage.setItem("queue", JSON.stringify(queue))
+			}
 		} else if (x < 99) {
 			nex = true
 		}
