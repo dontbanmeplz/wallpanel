@@ -376,11 +376,11 @@ window.onload = async () => {
 	await spotifyApi.transferMyPlayback([devid])
 	console.log("Device found")
 	
-	ws.send(JSON.stringify({type: "jam"}))
+	//ws.send(JSON.stringify({type: "jam"}))
 	async function jamc(){
 		ws.send(JSON.stringify({type: "jam"}))
 	}
-	setInterval(jamc, 60000)
+	//setInterval(jamc, 60000)
 	document.getElementById("togglePlay").onclick = async function () {
 		let p = await spotifyApi.getMyCurrentPlaybackState()
 		if (p.is_playing) {
