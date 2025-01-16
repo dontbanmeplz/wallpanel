@@ -1,6 +1,7 @@
 var vol = parseFloat(localStorage.getItem("vol")) || 1
 var jam = null;
 var link = null;
+var qrcode = new QRCode("qrcode");
 //var ws = new WebSocket("wss://ws.sawicz.com");
 var ws = new WebSocket("ws://localhost:8080")
 var Sound = (function () {
@@ -374,11 +375,18 @@ window.onload = async () => {
 	}
 	await spotifyApi.transferMyPlayback([devid])
 	console.log("Device found")
-	//start jam
-	//make interval program to keep it running
 	jam = await spotifyApi.sjam();
 	link = await spotifyApi.mlink(jam.join_session_uri);
-	var qrcode = new QRCode("qrcode");
+	
+	qrcode.makeCode(link.shareable_url)
+	async function jamc(){
+		let tjam = await spotifyApi.sjam();
+		if (tjam.session_id != jam.session_id){
+			link = await spotifyApi.mlink(tjam.join_session_uri);
+			qrcode.makeCode(link.shareable_url)
+		}
+	}
+	setInterval(jamc, 60000)
 	document.getElementById("togglePlay").onclick = async function () {
 		let p = await spotifyApi.getMyCurrentPlaybackState()
 		if (p.is_playing) {
