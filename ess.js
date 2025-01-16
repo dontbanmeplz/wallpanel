@@ -367,7 +367,7 @@ window.onload = async () => {
 		var devs = await spotifyApi.getMyDevices()
 		devs = devs.devices
 		for (var i = 0; i < devs.length; i++) {
-			if ((devs[i].name = "Librespot")) {
+			if (devs[i].name == "Librespot") {
 				temp2 = false
 				devid = devs[i].id
 				break
