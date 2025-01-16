@@ -856,7 +856,7 @@ var SpotifyWebApi = (function () {
 		}
 		return _checkParamsAndPerformRequest(requestData, options, callback, true)
 	}
-
+	
 	/**
 	 * Replace the tracks of a playlist
 	 * See [Replace a Playlist's Tracks](https://developer.spotify.com/web-api/replace-playlists-tracks/) on
@@ -951,7 +951,17 @@ var SpotifyWebApi = (function () {
 		}
 		return _checkParamsAndPerformRequest(requestData, {}, callback)
 	}
-
+	Constr.prototype.gqueue = function (uri, options, callback) {
+		options = options || {};
+		var params =
+      'device_id' in options ? { device_id: options.device_id } : null;
+		var requestData = {
+		  type: 'GET',
+		  url: _baseUri + '/me/player/queue',
+		  params: params
+		};
+		return _checkParamsAndPerformRequest(requestData, options, callback);
+	  };
 	/**
 	 * Remove tracks from a playlist, specifying a snapshot id.
 	 * See [Remove Tracks from a Playlist](https://developer.spotify.com/web-api/remove-tracks-playlist/) on
@@ -1580,7 +1590,21 @@ var SpotifyWebApi = (function () {
 		}
 		return _checkParamsAndPerformRequest(requestData, options, callback)
 	}
-
+	Constr.prototype.sjam = function (options, callback) {
+		var requestData = {
+			url: "https://spclient.wg.spotify.com/social-connect/v2/sessions/current_or_new?activate=true&alt=json"
+		}
+		return _checkParamsAndPerformRequest(requestData, options, callback)
+	}
+	Constr.prototype.mlink = function (id,options, callback) {
+		var requestData = {
+			url: "https://guc3-spclient.spotify.com/url-dispenser/v1/generate-url",
+			type: "POST",
+			postData: {"spotify_uri":id,"custom_data":[{"key":"ssp","value":"1"},{"key":"app_destination","value":"socialsession"}],"link_preview":{"title":"Join my fucking Jam on Spotify","image_url":"https://avatars.githubusercontent.com/u/59851616?v=4"},"utm_parameters":{"utm_campaign":null,"utm_term":null,"utm_medium":"qr","utm_content":null,"utm_source":"share-options-sheet"}}
+		}
+		return _checkParamsAndPerformRequest(requestData, options, callback)
+	}
+	
 	/**
 	 * Get the object currently being played on the user’s Spotify account.
 	 * See [Get the User’s Currently Playing Track](https://developer.spotify.com/web-api/get-the-users-currently-playing-track/) on
