@@ -144,6 +144,7 @@ def message_received(client, ws, message):
                 params=params,
                 headers=headers,
             )
+            print(r.text)
             j = r.json()
             headers = {
                 'Host': 'guc3-spclient.spotify.com',
@@ -191,6 +192,7 @@ def message_received(client, ws, message):
             }
 
             response = requests.post('https://guc3-spclient.spotify.com/url-dispenser/v1/generate-url', headers=headers, json=json_data)
+            print(response.text)
             j = response.json()
             ws.send_message_to_all(json.dumps({"type": "link", "link": j["shareable_url"]}))
         except Exception as e:
