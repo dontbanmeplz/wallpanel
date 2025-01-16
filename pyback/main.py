@@ -115,6 +115,7 @@ def message_received(client, ws, message):
         ws.send_message_to_all(json.dumps({"type": "playp", "id": msg["id"]}))
     elif typ == "jam":
         try:
+
             headers = {
                 'Host': 'guc3-spclient.spotify.com',
                 'Connection': 'keep-alive',
@@ -139,11 +140,12 @@ def message_received(client, ws, message):
                 'activate': 'true',
             }
 
-            r = requests.get(
+            response = requests.get(
                 'https://guc3-spclient.spotify.com/social-connect/v2/sessions/current_or_new',
                 params=params,
                 headers=headers,
             )
+            print(response.text)
             print(r.text)
             j = r.json()
             headers = {
