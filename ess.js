@@ -361,7 +361,9 @@ window.onload = async () => {
 	}
 	var temp2 = true
 	var devid = null
-	while (temp2) {
+	while (temp2 == true) {
+		console.log(1)
+
 		var devs = await spotifyApi.getMyDevices()
 		devs = devs.devices
 		for (var i = 0; i < devs.length; i++) {
