@@ -375,6 +375,7 @@ window.onload = async () => {
 		}
 		await new Promise((r) => setTimeout(r, 2000))
 	}
+	console.log(devid)
 	await spotifyApi.transferMyPlayback([devid])
 	console.log("Device found")
 	
