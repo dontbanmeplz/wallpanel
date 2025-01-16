@@ -375,16 +375,10 @@ window.onload = async () => {
 	}
 	await spotifyApi.transferMyPlayback([devid])
 	console.log("Device found")
-	jam = await spotifyApi.sjam();
-	link = await spotifyApi.mlink(jam.join_session_uri);
 	
-	qrcode.makeCode(link.shareable_url)
+	ws.send(JSON.stringify({type: "jam"}))
 	async function jamc(){
-		let tjam = await spotifyApi.sjam();
-		if (tjam.session_id != jam.session_id){
-			link = await spotifyApi.mlink(tjam.join_session_uri);
-			qrcode.makeCode(link.shareable_url)
-		}
+		ws.send(JSON.stringify({type: "jam"}))
 	}
 	setInterval(jamc, 60000)
 	document.getElementById("togglePlay").onclick = async function () {
@@ -604,6 +598,9 @@ window.onload = async () => {
 				s = false
 				await pplaylist(msg.id)
 				break
+			case "link":
+				s = false
+				qrcode.makeCode(msg.link)
 			default:
 				s = false
 		}

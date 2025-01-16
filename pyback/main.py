@@ -6,7 +6,7 @@ import pvporcupine
 from pvrecorder import PvRecorder
 import re
 import json
-
+import requests
 
 def c2n(s):
 
@@ -113,6 +113,89 @@ def message_received(client, ws, message):
         ws.send_message_to_all(json.dumps({"type": "psong", "id": msg["id"]}))
     elif typ == "playp":
         ws.send_message_to_all(json.dumps({"type": "playp", "id": msg["id"]}))
+    elif typ == "jam":
+        try:
+            headers = {
+                'Host': 'guc3-spclient.spotify.com',
+                'Connection': 'keep-alive',
+                'Origin': 'https://xpui.app.spotify.com',
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.117 Spotify/1.2.52.442 Safari/537.36',
+                'accept': 'application/json',
+                'accept-language': 'en',
+                'app-platform': 'OSX_ARM64',
+                'authorization': 'Bearer ' + auth,
+                'content-type': 'application/json;charset=UTF-8',
+                'sec-ch-ua': '"Not?A_Brand";v="99", "Chromium";v="130"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"macOS"',
+                'spotify-app-version': '1.2.52.442',
+                'Sec-Fetch-Site': 'same-site',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Dest': 'empty',
+                'Referer': 'https://xpui.app.spotify.com/',
+            }
+
+            params = {
+                'activate': 'true',
+            }
+
+            r = requests.get(
+                'https://guc3-spclient.spotify.com/social-connect/v2/sessions/current_or_new',
+                params=params,
+                headers=headers,
+            )
+            j = r.json()
+            headers = {
+                'Host': 'guc3-spclient.spotify.com',
+                'Connection': 'keep-alive',
+                'Origin': 'https://xpui.app.spotify.com',
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.117 Spotify/1.2.52.442 Safari/537.36',
+                'accept': 'application/json',
+                'accept-language': 'en',
+                'app-platform': 'OSX_ARM64',
+                'authorization': 'Bearer ' + auth,
+                'content-type': 'application/json;charset=UTF-8',
+                'sec-ch-ua': '"Not?A_Brand";v="99", "Chromium";v="130"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"macOS"',
+                'spotify-app-version': '1.2.52.442',
+                'Sec-Fetch-Site': 'same-site',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Dest': 'empty',
+                'Referer': 'https://xpui.app.spotify.com/',
+            }
+
+            json_data = {
+                'spotify_uri': j["join_session_uri"],
+                'custom_data': [
+                    {
+                        'key': 'ssp',
+                        'value': '1',
+                    },
+                    {
+                        'key': 'app_destination',
+                        'value': 'socialsession',
+                    },
+                ],
+                'link_preview': {
+                    'title': 'Join my Jam on Spotify',
+                    'image_url': 'https://avatars.githubusercontent.com/u/59851616?v=4',
+                },
+                'utm_parameters': {
+                    'utm_campaign': None,
+                    'utm_term': None,
+                    'utm_medium': 'qr',
+                    'utm_content': None,
+                    'utm_source': 'share-options-sheet',
+                },
+            }
+
+            response = requests.post('https://guc3-spclient.spotify.com/url-dispenser/v1/generate-url', headers=headers, json=json_data)
+            j = response.json()
+            ws.send_message_to_all(json.dumps({"type": "link", "link": j["shareable_url"]}))
+        except Exception as e:
+            print(e)
+
 
 
 PORT = 8080
