@@ -741,7 +741,7 @@ window.onload = async () => {
 			}),
 		)
 	}
-	setInterval(updater, 500)
+	setInterval(updater, 1500)
 
 	var nex = false
 	async function updateSeekBar() {
