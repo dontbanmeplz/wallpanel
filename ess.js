@@ -362,8 +362,6 @@ window.onload = async () => {
 	var temp2 = true
 	var devid = null
 	while (temp2 == true) {
-		console.log(1)
-
 		var devs = await spotifyApi.getMyDevices()
 		devs = devs.devices
 		for (var i = 0; i < devs.length; i++) {
@@ -375,7 +373,6 @@ window.onload = async () => {
 		}
 		await new Promise((r) => setTimeout(r, 2000))
 	}
-	console.log(devid)
 	await spotifyApi.transferMyPlayback([devid])
 	console.log("Device found")
 	
@@ -387,10 +384,8 @@ window.onload = async () => {
 	document.getElementById("togglePlay").onclick = async function () {
 		let p = await spotifyApi.getMyCurrentPlaybackState()
 		if (p.is_playing) {
-			console.log(1)
 			await spotifyApi.pause()
 		} else {
-			console.log(2)
 			await spotifyApi.play()
 		}
 		updater()
@@ -402,8 +397,6 @@ window.onload = async () => {
 	document.getElementById("hearts").onclick = async function () {
 		let p = await spotifyApi.getMyCurrentPlaybackState()
 		let a = await spotifyApi.containsMySavedTracks([p.item.id])
-		console.log(p.item.id)
-		console.log(a)
 		if (a[0]) {
 			liked(p.item.id)
 			document.getElementById("like").className = "likeicon-1-q2Ud4x hide"
@@ -502,7 +495,6 @@ window.onload = async () => {
 				break
 			case "volume":
 				if (msg.level) {
-					console.log(msg.level)
 					if (msg.level > 10) {
 						vol = 1
 					}
@@ -754,7 +746,6 @@ window.onload = async () => {
 		positionn = lastState + elapsedTime
 		if (!isPlaying) {
 			seekBar.value = positionn
-			//console.log(positionn)
 			t1.innerText = mtms(positionn)
 			t2.innerText = mtms(dur)
 		}

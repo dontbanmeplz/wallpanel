@@ -7,7 +7,9 @@ from pvrecorder import PvRecorder
 import re
 import json
 import requests
+from flask import Flask
 
+app = Flask(__name__)
 def c2n(s):
 
     words_to_numbers = {
@@ -201,13 +203,27 @@ def message_received(client, ws, message):
             print(e)
 
 
+@app.route("/")
+def hello_world():
+    headers = {
+        'Authorization': 'Bearer '+auth,
+    }
 
+    r = requests.get('https://api.spotify.com/v1/me/player', headers=headers)
+    rjs = r.json()
+    if rjs["is_playing"]:
+        return "true"
+    else:
+        return "false"
 PORT = 8080
 server = WebsocketServer(port=PORT)
 server.set_fn_message_received(message_received)
-
+import multiprocessing
+def flaskgo():
+    app.run(host="0.0.0.0", port=8890)
 if __name__ == "__main__":
     try:
+        multiprocessing.Process(target=flaskgo).start()
         server.run_forever(True)
         print("Server started on port", PORT)
         print("[%s] Started ..." % str(datetime.now()))
