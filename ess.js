@@ -738,7 +738,6 @@ window.onload = async () => {
 	}
 	setInterval(updater, 1500)
 
-	var nex = false
 	async function updateSeekBar() {
 		const seekBar = document.getElementById("points")
 		const t = document.getElementById("time")
@@ -753,11 +752,6 @@ window.onload = async () => {
 			seekBar.value = lastState
 		}
 		x = (seekBar.value / seekBar.max) * 100
-		if (x > 99.7 && nex === true) {
-			await spotifyApi.skipToPrevious();
-		} else if (x < 99) {
-			nex = true
-		}
 		$(seekBar).css(
 			"background",
 			"linear-gradient(to right, " +
