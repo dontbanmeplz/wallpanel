@@ -361,7 +361,7 @@ window.onload = async () => {
 	}
 	var temp2 = true
 	var devid = null
-	while (temp2 == true) {
+	/*while (temp2 == true) {
 		var devs = await spotifyApi.getMyDevices()
 		devs = devs.devices
 		for (var i = 0; i < devs.length; i++) {
@@ -374,7 +374,7 @@ window.onload = async () => {
 		await new Promise((r) => setTimeout(r, 2000))
 	}
 	await spotifyApi.transferMyPlayback([devid])
-	console.log("Device found")
+	console.log("Device found")*/
 	
 	//ws.send(JSON.stringify({type: "jam"}))
 	async function jamc(){
